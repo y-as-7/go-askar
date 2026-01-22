@@ -31,7 +31,7 @@ test: ## Run tests
 	go test -v ./...
 
 dev: ## Run with hot reload (requires air)
-	air
+	go run main.go run --watch
 
 migrate: ## Run database migrations
 	@echo "Migrations run automatically on startup"

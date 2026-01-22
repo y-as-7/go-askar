@@ -35,6 +35,20 @@ func main() {
 	}
 
 	command := os.Args[1]
+
+	switch command {
+	case "create/project", "create", "new":
+		handleCreateCommand(command)
+	case "run":
+		handleRunCommand()
+	default:
+		printError("Unknown command: " + command)
+		showUsage()
+		os.Exit(1)
+	}
+}
+
+func handleCreateCommand(command string) {
 	var projectName string
 
 	if command == "create/project" {
@@ -70,10 +84,6 @@ func main() {
 			os.Exit(1)
 		}
 		projectName = strings.TrimSpace(os.Args[2])
-	} else {
-		printError("Unknown command: " + command)
-		showUsage()
-		os.Exit(1)
 	}
 
 	// Validate project name
@@ -103,6 +113,40 @@ func main() {
 	printSuccess(projectName)
 }
 
+func handleRunCommand() {
+	watch := false
+	if len(os.Args) > 2 && os.Args[2] == "--watch" {
+		watch = true
+	}
+
+	if watch {
+		printStep("👀 Starting server with hot reload...")
+		// Check if air is installed
+		if _, err := exec.LookPath("air"); err != nil {
+			printError("Hot reload requires 'air'. Please install it with:")
+			fmt.Println("   go install github.com/air-verse/air@latest")
+			os.Exit(1)
+		}
+
+		cmd := exec.Command("air")
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			printError("Failed to start hot reload: " + err.Error())
+			os.Exit(1)
+		}
+	} else {
+		printStep("🚀 Starting server...")
+		cmd := exec.Command("go", "run", "main.go")
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if err := cmd.Run(); err != nil {
+			printError("Failed to start server: " + err.Error())
+			os.Exit(1)
+		}
+	}
+}
+
 func displayLogo() {
 	logo := `
 ` + Cyan + Bold + `
@@ -114,7 +158,7 @@ func displayLogo() {
   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 ` + Reset + `
 ` + Magenta + `              A Laravel-inspired Go Framework` + Reset + `
-` + Yellow + `              Version 1.0.7 (STABLE) ✨` + Reset + `
+` + Yellow + `              Version 1.1.0 (FEATURE RELEASE) ✨` + Reset + `
 `
 	fmt.Print(logo)
 }
