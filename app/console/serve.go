@@ -8,15 +8,15 @@ import (
 
 func init() {
 	Register(Command{
-		Name:        "serve",
+		Name:        "run",
 		Description: "Start the application server",
 		Execute:     handleServe,
 	})
 	
-	// Alias 'run' to 'serve' for backwards compatibility
+	// Alias 'serve' to 'run'
 	Register(Command{
-		Name:        "run",
-		Description: "Alias for serve",
+		Name:        "serve",
+		Description: "Alias for run",
 		Execute:     handleServe,
 	})
 }

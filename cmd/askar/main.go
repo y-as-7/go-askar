@@ -75,7 +75,7 @@ func showUsage(isInsideProject bool) {
 		
 		cmds := console.GetCommands()
 		for name, cmd := range cmds {
-			if name == "run" { continue }
+			if name == "serve" { continue }
 			fmt.Printf("  %-15s %s\n", ui.Green+name+ui.Reset, cmd.Description)
 		}
 		fmt.Println("")
@@ -85,7 +85,7 @@ func showUsage(isInsideProject bool) {
 	if !isInsideProject {
 		fmt.Printf("  go askar create/project my-shop\n")
 	} else {
-		fmt.Printf("  go askar serve --watch\n")
+		fmt.Printf("  go askar run --watch\n")
 	}
 	fmt.Println("")
 }
