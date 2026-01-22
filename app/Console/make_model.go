@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"unicode"
 )
 
 func init() {
@@ -49,57 +48,6 @@ func handleMakeModel(args []string) error {
 	fmt.Printf("   📄 app/DTO/%s_dto.go\n\n", strings.ToLower(modelName))
 
 	return nil
-}
-
-func validateModelName(name string) error {
-	if name == "" {
-		return fmt.Errorf("model name cannot be empty")
-	}
-
-	// Check if first character is a letter
-	firstChar := rune(name[0])
-	if !unicode.IsLetter(firstChar) {
-		return fmt.Errorf("model name must start with a letter")
-	}
-
-	// Check if all characters are alphanumeric
-	for _, char := range name {
-		if !unicode.IsLetter(char) && !unicode.IsDigit(char) {
-			return fmt.Errorf("model name must contain only letters and numbers")
-		}
-	}
-
-	return nil
-}
-
-func capitalizeFirst(s string) string {
-	if s == "" {
-		return s
-	}
-	return strings.ToUpper(string(s[0])) + s[1:]
-}
-
-func pluralize(word string) string {
-	// Simple pluralization rules
-	if strings.HasSuffix(word, "y") && len(word) > 1 {
-		// Check if the letter before 'y' is a consonant
-		beforeY := rune(word[len(word)-2])
-		if !isVowel(beforeY) {
-			return word[:len(word)-1] + "ies"
-		}
-	}
-
-	if strings.HasSuffix(word, "s") || strings.HasSuffix(word, "x") ||
-		strings.HasSuffix(word, "ch") || strings.HasSuffix(word, "sh") {
-		return word + "es"
-	}
-
-	return word + "s"
-}
-
-func isVowel(r rune) bool {
-	vowels := "aeiouAEIOU"
-	return strings.ContainsRune(vowels, r)
 }
 
 func createModelFile(modelName, tableName string) error {

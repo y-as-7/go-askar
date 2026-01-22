@@ -22,7 +22,7 @@ func handleMakeService(args []string) error {
 
 	serviceName := args[0]
 
-	// Validate service name
+	// Validate name
 	if err := validateModelName(serviceName); err != nil {
 		return err
 	}

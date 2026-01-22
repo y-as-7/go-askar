@@ -108,10 +108,21 @@ GET /api/v1/auth/profile     # Get user profile (requires JWT)
 The `askar` command provides powerful scaffolding capabilities:
 
 ```
-go askar run --watch           # Start server with hot reload
-go askar make:model Product    # Generate model and DTO files
-go askar cache:clear          # Clear application cache
-go askar key:generate         # Generate JWT secret
+go askar run --watch                      # Start server with hot reload
+go askar make:resource Product            # Generate full CRUD resource (Model, DTO, Service, Controller, Migration)
+go askar make:model Product               # Generate model and DTO files
+go askar make:service Product             # Generate service file
+go askar make:controller Product          # Generate controller file
+go askar make:request StoreProduct        # Generate request validation file
+go askar make:middleware Auth             # Generate middleware file
+go askar make:migration create_users      # Generate migration file
+go askar make:command MyCommand           # Generate new CLI command
+go askar make:seeder UserSeeder           # Generate database seeder
+go askar migrate                          # Run pending migrations
+go askar migrate:rollback                 # Rollback last migration batch
+go askar migrate:status                   # Show migration status
+go askar cache:clear                     # Clear application cache
+go askar key:generate                    # Generate JWT secret
 ```
 
 ```
