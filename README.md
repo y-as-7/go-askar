@@ -1,13 +1,13 @@
-# go-askar
+# askar
 
 [![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=for-the-badge&logo=go)](https://go.dev/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge)](LICENSE)
 [![Framework](https://img.shields.io/badge/Framework-Gin-00ADD8?style=for-the-badge)](https://gin-gonic.com/)
 [![GORM](https://img.shields.io/badge/ORM-GORM-00ADD8?style=for-the-badge)](https://gorm.io/)
 
-## About go-askar
+## About askar
 
-go-askar is a Laravel-inspired Go web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. go-askar takes the pain out of development by easing common tasks used in many web projects, such as:
+askar is a Laravel-inspired Go web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. askar takes the pain out of development by easing common tasks used in many web projects, such as:
 
 - **Built-in Authentication System** - Complete JWT-based user authentication out of the box
 - **Multi-Database Support** - SQLite, PostgreSQL, and MySQL support
@@ -17,20 +17,24 @@ go-askar is a Laravel-inspired Go web application framework with expressive, ele
 - **One-Command Installation** - Get your API running in seconds
 - **Comprehensive Documentation** - Detailed guides for every feature
 
-go-askar is accessible, powerful, and provides tools required for building robust RESTful APIs.
+askar is accessible, powerful, and provides tools required for building robust RESTful APIs.
 
 ## Installation
 
 Install the CLI tool:
 
 ```bash
-go install github.com/y-as-7/go-askar@latest
+go install github.com/y-as-7/askar@latest
 ```
 
 Create a new project:
 
 ```bash
-go-askar my-project
+go run main.go create/project my-project
+```
+or if installed globally:
+```bash
+askar create/project my-project
 ```
 
 That's it! Just like Laravel's `composer create-project`, one simple command creates your entire project with:
@@ -52,9 +56,9 @@ make run
 
 Your API will be available at `http://localhost:8080`
 
-## Learning go-askar
+## Learning askar
 
-go-askar has comprehensive documentation to help you get started:
+askar has comprehensive documentation to help you get started:
 
 - **[Installation Guide](docs/installation.md)** - Complete setup instructions
 - **[Authentication](docs/authentication.md)** - User authentication and JWT tokens
@@ -92,7 +96,7 @@ GET /api/v1/auth/profile     # Get user profile (requires JWT)
 
 ## CLI Tool Features
 
-The `go-askar` command provides a beautiful installation experience:
+The `askar` command provides a beautiful installation experience:
 
 ```
    ██████╗  ██████╗        █████╗ ███████╗██╗  ██╗ █████╗ ██████╗ 
@@ -112,11 +116,11 @@ The `go-askar` command provides a beautiful installation experience:
 
 ## Contributing
 
-Thank you for considering contributing to go-askar! The contribution guide can be found in the [CONTRIBUTING.md](CONTRIBUTING.md) document.
+Thank you for considering contributing to askar! The contribution guide can be found in the [CONTRIBUTING.md](CONTRIBUTING.md) document.
 
 ## Security Vulnerabilities
 
-If you discover a security vulnerability within go-askar, please send an email to the maintainers. All security vulnerabilities will be promptly addressed.
+If you discover a security vulnerability within askar, please send an email to the maintainers. All security vulnerabilities will be promptly addressed.
 
 **Security Best Practices:**
 - Always use HTTPS in production
@@ -127,11 +131,11 @@ If you discover a security vulnerability within go-askar, please send an email t
 
 ## Code of Conduct
 
-go-askar is committed to providing a welcoming and inclusive environment for all contributors. Please be respectful and constructive in all interactions.
+askar is committed to providing a welcoming and inclusive environment for all contributors. Please be respectful and constructive in all interactions.
 
 ## License
 
-The go-askar framework is open-sourced software licensed under the [MIT license](LICENSE).
+The askar framework is open-sourced software licensed under the [MIT license](LICENSE).
 
 ---
 

@@ -1,16 +1,20 @@
 #!/bin/bash
 
-# go-askar Framework Installer
-# This script sets up a new project from the go-askar framework template
+# askar Framework Installer
+# This script sets up a new project from the askar framework template
 
 set -e
 
-echo "🚀 go-askar Framework Installer"
+echo "🚀 askar Framework Installer"
 echo "==============================="
 echo ""
 
 # Get project name
-read -p "Enter your project name (e.g., my-shop): " PROJECT_NAME
+PROJECT_NAME=$1
+
+if [ -z "$PROJECT_NAME" ]; then
+    read -p "Enter your project name (e.g., my-shop): " PROJECT_NAME
+fi
 
 if [ -z "$PROJECT_NAME" ]; then
     echo "❌ Project name cannot be empty"
@@ -56,7 +60,7 @@ if [ ! -d .git ]; then
     echo "🔧 Initializing git repository..."
     git init
     git add .
-    git commit -m "Initial commit: $PROJECT_NAME based on go-askar framework"
+    git commit -m "Initial commit: $PROJECT_NAME based on askar framework"
 fi
 
 echo ""
@@ -72,4 +76,4 @@ echo "  - Installation: docs/installation.md"
 echo "  - Authentication: docs/authentication.md"
 echo "  - Database: docs/database.md"
 echo ""
-echo "🎉 Happy coding with go-askar!"
+echo "🎉 Happy coding with askar!"

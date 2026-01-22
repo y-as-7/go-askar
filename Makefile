@@ -10,11 +10,18 @@ install: ## Install dependencies
 	go mod download
 	go mod tidy
 
+create: ## Create a new project (e.g., make create project=my-shop)
+	@if [ -z "$(project)" ]; then echo "Error: project variable is required. usage: make create project=name"; exit 1; fi
+	go run main.go create/project $(project)
+
+install-cli: ## Install the askar CLI globally
+	go install .
+
 run: ## Run the application
 	go run main.go
 
 build: ## Build the application
-	go build -o bin/order-system main.go
+	go build -o bin/askar main.go
 
 clean: ## Clean build artifacts
 	rm -rf bin/

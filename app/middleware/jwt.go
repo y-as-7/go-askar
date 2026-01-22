@@ -9,7 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/y-as-7/go-askar/app/dto"
+	"github.com/y-as-7/askar/app/dto"
 )
 
 type Claims struct {

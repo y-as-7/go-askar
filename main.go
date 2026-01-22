@@ -29,21 +29,50 @@ func main() {
 	time.Sleep(500 * time.Millisecond)
 
 	// Get subcommand and project name
-	if len(os.Args) < 3 {
-		printError("Please provide a subcommand and project name")
-		fmt.Printf("\n%sUsage:%s go-askar new %s<project-name>%s\n\n", Bold, Reset, Cyan, Reset)
-		fmt.Printf("%sExample:%s go-askar new my-shop\n\n", Bold, Reset)
+	if len(os.Args) < 2 {
+		showUsage()
 		os.Exit(1)
 	}
 
-	subcommand := os.Args[1]
-	projectName := os.Args[2]
+	command := os.Args[1]
+	var projectName string
 
-	// Validate subcommand
-	if subcommand != "new" {
-		printError("Unknown subcommand: " + subcommand)
-		fmt.Printf("\n%sAvailable commands:%s\n", Bold, Reset)
-		fmt.Printf("  go-askar new %s<project-name>%s  - Create a new project\n\n", Cyan, Reset)
+	if command == "create/project" {
+		if len(os.Args) < 3 {
+			printError("Please provide a project name")
+			showUsage()
+			os.Exit(1)
+		}
+		projectName = os.Args[2]
+	} else if command == "create" {
+		if len(os.Args) < 3 {
+			printError("Please provide a subcommand (e.g., project)")
+			showUsage()
+			os.Exit(1)
+		}
+		subcommand := os.Args[2]
+		if subcommand == "project" {
+			if len(os.Args) < 4 {
+				printError("Please provide a project name")
+				showUsage()
+				os.Exit(1)
+			}
+			projectName = os.Args[3]
+		} else {
+			printError("Unknown subcommand: " + subcommand)
+			showUsage()
+			os.Exit(1)
+		}
+	} else if command == "new" {
+		if len(os.Args) < 3 {
+			printError("Please provide a project name")
+			showUsage()
+			os.Exit(1)
+		}
+		projectName = os.Args[2]
+	} else {
+		printError("Unknown command: " + command)
+		showUsage()
 		os.Exit(1)
 	}
 
@@ -53,7 +82,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	printStep("🚀 Creating new go-askar project: " + projectName)
+	printStep("🚀 Creating new askar project: " + projectName)
 	time.Sleep(300 * time.Millisecond)
 
 	// Clone repository
@@ -76,17 +105,24 @@ func main() {
 func displayLogo() {
 	logo := `
 ` + Cyan + Bold + `
-   ██████╗  ██████╗        █████╗ ███████╗██╗  ██╗ █████╗ ██████╗ 
-  ██╔════╝ ██╔═══██╗      ██╔══██╗██╔════╝██║ ██╔╝██╔══██╗██╔══██╗
-  ██║  ███╗██║   ██║█████╗███████║███████╗█████╔╝ ███████║██████╔╝
-  ██║   ██║██║   ██║╚════╝██╔══██║╚════██║██╔═██╗ ██╔══██║██╔══██╗
-  ╚██████╔╝╚██████╔╝      ██║  ██║███████║██║  ██╗██║  ██║██║  ██║
-   ╚═════╝  ╚═════╝       ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
+   █████╗ ███████╗██╗  ██╗ █████╗ ██████╗ 
+  ██╔══██╗██╔════╝██║ ██╔╝██╔══██╗██╔══██╗
+  ███████║███████╗█████╔╝ ███████║██████╔╝
+  ██╔══██║╚════██║██╔═██╗ ██╔══██║██╔══██╗
+  ██║  ██║███████║██║  ██╗██║  ██║██║  ██║
+  ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 ` + Reset + `
 ` + Magenta + `              A Laravel-inspired Go Framework` + Reset + `
 ` + Yellow + `              Version 0.1.0` + Reset + `
 `
 	fmt.Print(logo)
+}
+
+func showUsage() {
+	fmt.Printf("\n%sUsage:%s\n", Bold, Reset)
+	fmt.Printf("  askar create/project %s<project-name>%s\n\n", Cyan, Reset)
+	fmt.Printf("%sExample:%s\n", Bold, Reset)
+	fmt.Printf("  askar create/project my-shop\n\n")
 }
 
 func printStep(message string) {
@@ -101,20 +137,20 @@ func printSuccess(projectName string) {
 	fmt.Printf("\n%s%s✓ Project created successfully!%s\n\n", Green, Bold, Reset)
 	
 	box := `
-╔════════════════════════════════════════════════════════════╗
-║                                                            ║
-║  ` + Green + `✓` + Reset + ` Your go-askar project is ready!                      ║
-║                                                            ║
-║  ` + Cyan + `Next steps:` + Reset + `                                            ║
-║                                                            ║
-║    ` + Yellow + `cd ` + projectName + Reset + `                                           ║
-║    ` + Yellow + `cp .env.example .env` + Reset + `                                ║
-║    ` + Yellow + `make run` + Reset + `                                            ║
-║                                                            ║
-║  ` + Magenta + `Documentation:` + Reset + ` docs/                                   ║
-║  ` + Magenta + `API:` + Reset + ` http://localhost:8080                            ║
-║                                                            ║
-╚════════════════════════════════════════════════════════════╝
+  ╔════════════════════════════════════════════════════════════╗
+  ║                                                            ║
+  ║  ` + Green + `✓` + Reset + ` Your askar project is ready!                         ║
+  ║                                                            ║
+  ║  ` + Cyan + `Next steps:` + Reset + `                                            ║
+  ║                                                            ║
+  ║    ` + Yellow + `cd ` + projectName + Reset + `                                           ║
+  ║    ` + Yellow + `cp .env.example .env` + Reset + `                                ║
+  ║    ` + Yellow + `make run` + Reset + `                                            ║
+  ║                                                            ║
+  ║  ` + Magenta + `Documentation:` + Reset + ` docs/                                   ║
+  ║  ` + Magenta + `API:` + Reset + ` http://localhost:8080                            ║
+  ║                                                            ║
+  ╚════════════════════════════════════════════════════════════╝
 `
 	fmt.Println(box)
 	fmt.Printf("%sHappy coding! 🎉%s\n\n", Bold, Reset)
@@ -141,7 +177,7 @@ func cloneFramework(projectName string) error {
 			case <-done:
 				return
 			default:
-				fmt.Printf("\r  %s%s%s Cloning repository...", Cyan, spinner[i%len(spinner)], Reset)
+				fmt.Printf("\r  %s%s%s Cloning framework...", Cyan, spinner[i%len(spinner)], Reset)
 				i++
 				time.Sleep(100 * time.Millisecond)
 			}
@@ -213,7 +249,7 @@ func setupProject(projectName string) error {
 	
 	exec.Command("git", "init").Run()
 	exec.Command("git", "add", ".").Run()
-	exec.Command("git", "commit", "-m", "Initial commit: "+projectName+" based on go-askar").Run()
+	exec.Command("git", "commit", "-m", "Initial commit: "+projectName+" based on askar").Run()
 
 	return nil
 }
@@ -240,7 +276,7 @@ func updateImports(projectName string) error {
 				return err
 			}
 
-			updated := strings.ReplaceAll(string(content), "github.com/y-as-7/go-askar/", projectName+"/")
+			updated := strings.ReplaceAll(string(content), "github.com/y-as-7/askar/", projectName+"/")
 			return os.WriteFile(path, []byte(updated), 0644)
 		}
 
