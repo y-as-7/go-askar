@@ -26,6 +26,23 @@ type Form struct {
 	Schema []Component
 }
 
+// FormField interface to support both old and new input types
+type FormField interface {
+	ToComponent() Component
+}
+
+// AddField adds a field to the form (supports both Component and fluent inputs)
+func (f *Form) AddField(field interface{}) {
+	switch v := field.(type) {
+	case Component:
+		f.Schema = append(f.Schema, v)
+	case *TextInputField:
+		f.Schema = append(f.Schema, v.ToComponent())
+	case FormField:
+		f.Schema = append(f.Schema, v.ToComponent())
+	}
+}
+
 type Infolist struct {
 	Schema []Entry
 }
@@ -54,7 +71,8 @@ type Component struct {
 	Value       interface{}
 }
 
-func TextInput(name, label string) Component {
+// Deprecated: Use the fluent TextInput from inputs.go instead
+func OldTextInput(name, label string) Component {
 	return Component{
 		Type:  "text",
 		Name:  name,
@@ -62,7 +80,8 @@ func TextInput(name, label string) Component {
 	}
 }
 
-func EmailInput(name, label string) Component {
+// Deprecated: Use the fluent EmailInput from inputs.go instead
+func OldEmailInput(name, label string) Component {
 	return Component{
 		Type:  "email",
 		Name:  name,

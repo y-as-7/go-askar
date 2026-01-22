@@ -77,6 +77,9 @@ func loadTemplates(router *gin.Engine) {
 			}
 			return template.HTML(buf.String()), nil
 		},
+		"add": func(a, b int) int {
+			return a + b
+		},
 	}
 
 	templ = template.New("").Funcs(funcMap)

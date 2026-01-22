@@ -1,6 +1,7 @@
 package core
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,20 @@ type NavItem struct {
 	Label string
 	Slug  string
 	Icon  string
+}
+
+type Notification struct {
+	Type    string `json:"type"`
+	Title   string `json:"title"`
+	Body    string `json:"body"`
+	Duration int   `json:"duration"`
+}
+
+type NotificationStore struct {
+	Success []Notification
+	Error   []Notification
+	Warning []Notification
+	Info    []Notification
 }
 
 func New() *DashAskar {
@@ -42,7 +57,8 @@ func (d *DashAskar) Register(router *gin.Engine) {
 		// Protected Routes
 		protected := admin.Group("/")
 		protected.Use(d.AdminAuth())
-		
+		protected.Use(d.MethodOverride())
+
 		// Apply Custom Middlewares
 		if len(d.Middlewares) > 0 {
 			protected.Use(d.Middlewares...)
@@ -62,6 +78,7 @@ func (d *DashAskar) Register(router *gin.Engine) {
 					resourceGroup.GET("/:id", d.handleResourceView(res))
 					resourceGroup.GET("/:id/edit", d.handleResourceEdit(res))
 					resourceGroup.PUT("/:id", d.handleResourceUpdate(res))
+					resourceGroup.POST("/:id", d.handleResourceUpdate(res)) // For method override
 					resourceGroup.DELETE("/:id", d.handleResourceDelete(res))
 				}
 
@@ -84,6 +101,19 @@ func (d *DashAskar) AdminAuth() gin.HandlerFunc {
 			return
 		}
 		// In a real app, you'd validate the token/session here
+		c.Next()
+	}
+}
+
+func (d *DashAskar) MethodOverride() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if c.Request.Method == "POST" {
+			// Parse form data first
+			c.Request.ParseForm()
+			if method := c.Request.PostForm.Get("_method"); method != "" {
+				c.Request.Method = method
+			}
+		}
 		c.Next()
 	}
 }
@@ -127,13 +157,66 @@ func (d *DashAskar) AddResource(res Resource) {
 	d.Resources = append(d.Resources, res)
 }
 
+func (d *DashAskar) SetNotification(c *gin.Context, notificationType, title, body string) {
+	notifications := d.GetNotifications(c)
+
+	notification := Notification{
+		Type:     notificationType,
+		Title:    title,
+		Body:     body,
+		Duration: 5000, // 5 seconds
+	}
+
+	switch notificationType {
+	case "success":
+		notifications.Success = append(notifications.Success, notification)
+	case "error":
+		notifications.Error = append(notifications.Error, notification)
+	case "warning":
+		notifications.Warning = append(notifications.Warning, notification)
+	case "info":
+		notifications.Info = append(notifications.Info, notification)
+	}
+
+	d.storeNotifications(c, notifications)
+}
+
+func (d *DashAskar) GetNotifications(c *gin.Context) *NotificationStore {
+	// Try to get notifications from cookie
+	if cookieValue, err := c.Cookie("notifications"); err == nil && cookieValue != "" {
+		var store NotificationStore
+		if err := json.Unmarshal([]byte(cookieValue), &store); err == nil {
+			// Clear the cookie after reading
+			c.SetCookie("notifications", "", -1, "/", "", false, false)
+			return &store
+		}
+	}
+	return &NotificationStore{}
+}
+
+func (d *DashAskar) storeNotifications(c *gin.Context, store *NotificationStore) {
+	// Store notifications in cookie
+	if data, err := json.Marshal(store); err == nil {
+		c.SetCookie("notifications", string(data), 60, "/", "", false, false) // 1 minute expiry
+	}
+}
+
 func (d *DashAskar) handleResourceIndex(res Resource) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var records []map[string]interface{}
+		config.DB.Table(res.GetSlug()).Where("deleted_at IS NULL").Find(&records)
+
+		table := &Table{}
+		res.Table(table)
+
 		c.HTML(200, "dash-askar/layouts/admin", gin.H{
-			"title":       res.GetTitle(),
-			"resource":    res,
-			"nav":         d.navItems,
-			"ContentName": "dash-askar/resource/index-content",
+			"title":         res.GetTitle(),
+			"resource":      res,
+			"records":       records,
+			"table":         table,
+			"nav":           d.navItems,
+			"ContentName":   "dash-askar/resource/index-content",
+			"notifications": d.GetNotifications(c),
 		})
 	}
 }
@@ -141,16 +224,43 @@ func (d *DashAskar) handleResourceIndex(res Resource) gin.HandlerFunc {
 func (d *DashAskar) handleResourceView(res Resource) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		id := c.Param("id")
+
+		var record map[string]interface{}
+
+		// Use Raw query instead of Table().First() to avoid GORM model requirements
+		query := "SELECT * FROM " + res.GetSlug() + " WHERE id = ? AND (deleted_at IS NULL OR deleted_at = '')"
+		result := config.DB.Raw(query, id).Scan(&record)
+
+		if result.Error != nil || result.RowsAffected == 0 {
+			c.HTML(404, "dash-askar/layouts/admin", gin.H{
+				"title":         "Record Not Found",
+				"error":         "Record with ID " + id + " not found in table " + res.GetSlug(),
+				"nav":           d.navItems,
+				"ContentName":   "dash-askar/resource/view-content",
+				"notifications": d.GetNotifications(c),
+			})
+			return
+		}
+
 		infolist := &Infolist{}
 		res.Infolist(infolist)
 
+		// Populate the schema with actual data values
+		for i := range infolist.Schema {
+			if value, exists := record[infolist.Schema[i].Name]; exists {
+				infolist.Schema[i].Value = value
+			}
+		}
+
 		c.HTML(200, "dash-askar/layouts/admin", gin.H{
-			"title":       "View " + res.GetTitle(),
-			"resource":    res,
-			"id":          id,
-			"schema":      infolist.Schema,
-			"nav":         d.navItems,
-			"ContentName": "dash-askar/resource/view-content",
+			"title":         "View " + res.GetTitle(),
+			"resource":      res,
+			"id":            id,
+			"record":        record,
+			"schema":        infolist.Schema,
+			"nav":           d.navItems,
+			"ContentName":   "dash-askar/resource/view-content",
+			"notifications": d.GetNotifications(c),
 		})
 	}
 }
@@ -161,52 +271,161 @@ func (d *DashAskar) handleResourceCreate(res Resource) gin.HandlerFunc {
 		res.Form(form)
 
 		c.HTML(200, "dash-askar/layouts/admin", gin.H{
-			"title":       "Create " + res.GetTitle(),
-			"resource":    res,
-			"schema":      form.Schema,
-			"nav":         d.navItems,
-			"ContentName": "dash-askar/resource/create-content",
+			"title":         "Create " + res.GetTitle(),
+			"resource":      res,
+			"schema":        form.Schema,
+			"nav":           d.navItems,
+			"ContentName":   "dash-askar/resource/create-content",
+			"notifications": d.GetNotifications(c),
 		})
 	}
 }
 
 func (d *DashAskar) handleResourceStore(res Resource) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "Store logic for " + res.GetTitle()})
+		// Get form data instead of JSON
+		createData := make(map[string]interface{})
+
+		// Get form values based on the resource schema
+		form := &Form{}
+		res.Form(form)
+
+		for _, field := range form.Schema {
+			if value := c.PostForm(field.Name); value != "" {
+				createData[field.Name] = value
+			}
+		}
+
+		if len(createData) == 0 {
+			d.SetNotification(c, "error", "Error", "No data provided")
+			c.Redirect(http.StatusFound, d.Prefix+"/"+res.GetSlug()+"/create")
+			return
+		}
+
+		result := config.DB.Table(res.GetSlug()).Create(createData)
+		if result.Error != nil {
+			d.SetNotification(c, "error", "Error", "Failed to create record")
+			c.Redirect(http.StatusFound, d.Prefix+"/"+res.GetSlug()+"/create")
+			return
+		}
+
+		d.SetNotification(c, "success", "Success", res.GetTitle()+" created successfully")
+		c.Redirect(http.StatusFound, d.Prefix+"/"+res.GetSlug())
 	}
 }
 
 func (d *DashAskar) handleResourceEdit(res Resource) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		id := c.Param("id")
+
+		// Fetch the existing record data
+		var record map[string]interface{}
+		query := "SELECT * FROM " + res.GetSlug() + " WHERE id = ? AND (deleted_at IS NULL OR deleted_at = '')"
+		result := config.DB.Raw(query, id).Scan(&record)
+
+		if result.Error != nil || result.RowsAffected == 0 {
+			c.HTML(404, "dash-askar/layouts/admin", gin.H{
+				"title":         "Record Not Found",
+				"error":         "Record with ID " + id + " not found",
+				"nav":           d.navItems,
+				"ContentName":   "dash-askar/resource/edit-content",
+				"notifications": d.GetNotifications(c),
+			})
+			return
+		}
+
 		form := &Form{}
 		res.Form(form)
 
+		// Pre-populate form fields with existing data
+		for i := range form.Schema {
+			if value, exists := record[form.Schema[i].Name]; exists {
+				form.Schema[i].Value = value
+			}
+		}
+
 		c.HTML(200, "dash-askar/layouts/admin", gin.H{
-			"title":       "Edit " + res.GetTitle(),
-			"resource":    res,
-			"schema":      form.Schema,
-			"nav":         d.navItems,
-			"ContentName": "dash-askar/resource/edit-content",
+			"title":         "Edit " + res.GetTitle(),
+			"resource":      res,
+			"id":            id,
+			"record":        record,
+			"schema":        form.Schema,
+			"nav":           d.navItems,
+			"ContentName":   "dash-askar/resource/edit-content",
+			"notifications": d.GetNotifications(c),
 		})
 	}
 }
 
 func (d *DashAskar) handleResourceUpdate(res Resource) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "Update logic for " + res.GetTitle()})
+		id := c.Param("id")
+
+		// Get form data instead of JSON
+		updateData := make(map[string]interface{})
+
+		// Get form values based on the resource schema
+		form := &Form{}
+		res.Form(form)
+
+		for _, field := range form.Schema {
+			if value := c.PostForm(field.Name); value != "" {
+				updateData[field.Name] = value
+			}
+		}
+
+		if len(updateData) == 0 {
+			d.SetNotification(c, "error", "Error", "No data provided")
+			c.Redirect(http.StatusFound, d.Prefix+"/"+res.GetSlug()+"/"+id+"/edit")
+			return
+		}
+
+		result := config.DB.Table(res.GetSlug()).Where("id = ?", id).Updates(updateData)
+		if result.Error != nil {
+			d.SetNotification(c, "error", "Error", "Failed to update record")
+			c.Redirect(http.StatusFound, d.Prefix+"/"+res.GetSlug()+"/"+id+"/edit")
+			return
+		}
+
+		if result.RowsAffected == 0 {
+			d.SetNotification(c, "error", "Error", "Record not found")
+			c.Redirect(http.StatusFound, d.Prefix+"/"+res.GetSlug()+"/"+id+"/edit")
+			return
+		}
+
+		d.SetNotification(c, "success", "Success", res.GetTitle()+" updated successfully")
+		c.Redirect(http.StatusFound, d.Prefix+"/"+res.GetSlug())
 	}
 }
 
 func (d *DashAskar) handleResourceDelete(res Resource) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		c.JSON(200, gin.H{"message": "Delete logic for " + res.GetTitle()})
+		id := c.Param("id")
+
+		result := config.DB.Table(res.GetSlug()).Where("id = ?", id).Update("deleted_at", "NOW()")
+		if result.Error != nil {
+			d.SetNotification(c, "error", "Error", "Failed to delete record")
+			c.Redirect(http.StatusFound, d.Prefix+"/"+res.GetSlug())
+			return
+		}
+
+		if result.RowsAffected == 0 {
+			d.SetNotification(c, "error", "Error", "Record not found")
+			c.Redirect(http.StatusFound, d.Prefix+"/"+res.GetSlug())
+			return
+		}
+
+		d.SetNotification(c, "success", "Success", res.GetTitle()+" deleted successfully")
+		c.Redirect(http.StatusFound, d.Prefix+"/"+res.GetSlug())
 	}
 }
 
 func (d *DashAskar) handleDashboard(c *gin.Context) {
 	c.HTML(200, "dash-askar/layouts/admin", gin.H{
-		"title":       "Admin Dashboard",
-		"nav":         d.navItems,
-		"ContentName": "dash-askar/dashboard-content",
+		"title":         "Admin Dashboard",
+		"nav":           d.navItems,
+		"ContentName":   "dash-askar/dashboard-content",
+		"notifications": d.GetNotifications(c),
 	})
 }
+
