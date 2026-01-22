@@ -114,7 +114,7 @@ func displayLogo() {
   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 ` + Reset + `
 ` + Magenta + `              A Laravel-inspired Go Framework` + Reset + `
-` + Yellow + `              Version 1.0.5 (STABLE) ✨` + Reset + `
+` + Yellow + `              Version 1.0.6 (STABLE) ✨` + Reset + `
 `
 	fmt.Print(logo)
 }
@@ -241,8 +241,10 @@ func setupProject(projectName string) error {
 		return err
 	}
 
-	// Remove .git directory
+	// Remove installers and other unnecessary files
 	os.RemoveAll(".git")
+	os.Remove("install.sh")
+	os.Remove("install.ps1")
 
 	return nil
 }

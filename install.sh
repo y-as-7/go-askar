@@ -104,8 +104,10 @@ fi
 echo "📥 Installing dependencies..."
 go mod tidy
 
-# Remove .git directory if it exists (cloned from framework)
+# Remove installers and .git directory if it exists
 rm -rf .git || true
+rm -f install.ps1 || true
+rm -f "$0" || true # Remove self
 
 echo -e "\n✅ ${GREEN}Project setup complete!${NC}\n"
 echo -e "📋 ${BLUE}Next steps:${NC}"

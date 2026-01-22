@@ -113,11 +113,13 @@ if (-not (Test-Path ".env")) {
 Write-Host "📥 Installing dependencies..."
 go mod tidy
 
-# Remove .git
+# Remove installers and .git
 if (Test-Path ".git") {
     Write-Host "🧹 Cleaning up..."
     Remove-Item ".git" -Recurse -Force
 }
+Remove-Item "install.sh" -Force -ErrorAction SilentlyContinue
+Remove-Item $MyInvocation.MyCommand.Path -Force -ErrorAction SilentlyContinue # Remove self
 
 Write-Host "`n✅ $($GREEN)Project setup complete!$($NC)`n"
 Write-Host "📋 $($BLUE)Next steps:$($NC)"
