@@ -24,7 +24,7 @@ askar is accessible, powerful, and provides tools required for building robust R
 Install the CLI tool:
 
 ```bash
-go install github.com/y-as-7/askar@latest
+go install github.com/y-as-7/go-askar@latest
 ```
 
 Create a new project:
