@@ -60,7 +60,7 @@ After creating your project:
 ```bash
 cd my-project
 cp .env.example .env
-go askar run --watch  # Run with hot reload
+go askar run --watch  # Start with hot reload
 ```
 
 Your API will be available at `http://localhost:8080`
