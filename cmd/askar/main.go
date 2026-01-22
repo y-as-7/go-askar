@@ -274,7 +274,7 @@ func printSuccessBox(projectName string) {
   ║    ` + ui.Yellow + `go run main.go` + ui.Reset + `                                     ║
   ║                                                            ║
   ║  ` + ui.Magenta + `Documentation:` + ui.Reset + ` docs/                                   ║
-  ║  ` + ui.Magenta + `API:` + Reset + ` http://localhost:8080                            ║
+  ║  ` + ui.Magenta + `API:` + ui.Reset + ` http://localhost:8080                            ║
   ║                                                            ║
   ╚════════════════════════════════════════════════════════════╝
 `
