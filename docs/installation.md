@@ -30,7 +30,7 @@ This command will:
 - Download the framework.
 - Configure all naming and internal imports.
 - Generate a secure `JWT_SECRET`.
-- Initialize a fresh Git repository.
+- Ready for your own `git init`.
 
 ## 3. Getting Started
 
