@@ -1,22 +1,23 @@
-package controllers
+package Controllers
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/y-as-7/go-askar/config"
+	"github.com/y-as-7/go-askar/app/DTO"
+	"github.com/y-as-7/go-askar/app/Http/Middleware"
+	"github.com/y-as-7/go-askar/app/Models"
 	"github.com/y-as-7/go-askar/app/dto"
-	"github.com/y-as-7/go-askar/app/middleware"
-	"github.com/y-as-7/go-askar/app/models"
+	"github.com/y-as-7/go-askar/config"
 )
 
 type AuthController struct{}
 
 // Register new user
 func (ctrl *AuthController) Register(c *gin.Context) {
-	var req dto.RegisterRequest
+	var req DTO.RegisterRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, dto.Response{
+		c.JSON(http.StatusBadRequest, DTO.Response{
 			Success: false,
 			Error:   err.Error(),
 		})
@@ -24,9 +25,9 @@ func (ctrl *AuthController) Register(c *gin.Context) {
 	}
 
 	// Check if user already exists
-	var existingUser models.User
+	var existingUser Models.User
 	if err := config.DB.Where("email = ?", req.Email).First(&existingUser).Error; err == nil {
-		c.JSON(http.StatusConflict, dto.Response{
+		c.JSON(http.StatusConflict, DTO.Response{
 			Success: false,
 			Error:   "User with this email already exists",
 		})
@@ -34,13 +35,13 @@ func (ctrl *AuthController) Register(c *gin.Context) {
 	}
 
 	// Create new user
-	user := models.User{
+	user := Models.User{
 		Name:  req.Name,
 		Email: req.Email,
 	}
 
 	if err := user.HashPassword(req.Password); err != nil {
-		c.JSON(http.StatusInternalServerError, dto.Response{
+		c.JSON(http.StatusInternalServerError, DTO.Response{
 			Success: false,
 			Error:   "Failed to hash password",
 		})
@@ -48,7 +49,7 @@ func (ctrl *AuthController) Register(c *gin.Context) {
 	}
 
 	if err := config.DB.Create(&user).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, dto.Response{
+		c.JSON(http.StatusInternalServerError, DTO.Response{
 			Success: false,
 			Error:   "Failed to create user",
 		})
@@ -56,19 +57,19 @@ func (ctrl *AuthController) Register(c *gin.Context) {
 	}
 
 	// Generate token
-	token, err := middleware.GenerateToken(user.ID, user.Email, user.Role)
+	token, err := Middleware.GenerateToken(user.ID, user.Email, user.Role)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, dto.Response{
+		c.JSON(http.StatusInternalServerError, DTO.Response{
 			Success: false,
 			Error:   "Failed to generate token",
 		})
 		return
 	}
 
-	c.JSON(http.StatusCreated, dto.Response{
+	c.JSON(http.StatusCreated, DTO.Response{
 		Success: true,
 		Message: "User registered successfully",
-		Data: dto.LoginResponse{
+		Data: DTO.LoginResponse{
 			Token: token,
 			User:  user,
 		},
@@ -77,9 +78,9 @@ func (ctrl *AuthController) Register(c *gin.Context) {
 
 // Login user
 func (ctrl *AuthController) Login(c *gin.Context) {
-	var req dto.LoginRequest
+	var req DTO.LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, dto.Response{
+		c.JSON(http.StatusBadRequest, DTO.Response{
 			Success: false,
 			Error:   err.Error(),
 		})
@@ -87,9 +88,9 @@ func (ctrl *AuthController) Login(c *gin.Context) {
 	}
 
 	// Find user
-	var user models.User
+	var user Models.User
 	if err := config.DB.Where("email = ?", req.Email).First(&user).Error; err != nil {
-		c.JSON(http.StatusUnauthorized, dto.Response{
+		c.JSON(http.StatusUnauthorized, DTO.Response{
 			Success: false,
 			Error:   "Invalid credentials",
 		})
@@ -98,7 +99,7 @@ func (ctrl *AuthController) Login(c *gin.Context) {
 
 	// Check password
 	if err := user.CheckPassword(req.Password); err != nil {
-		c.JSON(http.StatusUnauthorized, dto.Response{
+		c.JSON(http.StatusUnauthorized, DTO.Response{
 			Success: false,
 			Error:   "Invalid credentials",
 		})
@@ -107,7 +108,7 @@ func (ctrl *AuthController) Login(c *gin.Context) {
 
 	// Check if user is active
 	if !user.IsActive {
-		c.JSON(http.StatusForbidden, dto.Response{
+		c.JSON(http.StatusForbidden, DTO.Response{
 			Success: false,
 			Error:   "Account is inactive",
 		})
@@ -115,19 +116,19 @@ func (ctrl *AuthController) Login(c *gin.Context) {
 	}
 
 	// Generate token
-	token, err := middleware.GenerateToken(user.ID, user.Email, user.Role)
+	token, err := Middleware.GenerateToken(user.ID, user.Email, user.Role)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, dto.Response{
+		c.JSON(http.StatusInternalServerError, DTO.Response{
 			Success: false,
 			Error:   "Failed to generate token",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.Response{
+	c.JSON(http.StatusOK, DTO.Response{
 		Success: true,
 		Message: "Login successful",
-		Data: dto.LoginResponse{
+		Data: DTO.LoginResponse{
 			Token: token,
 			User:  user,
 		},
@@ -138,16 +139,16 @@ func (ctrl *AuthController) Login(c *gin.Context) {
 func (ctrl *AuthController) GetProfile(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 	
-	var user models.User
+	var user Models.User
 	if err := config.DB.First(&user, userID).Error; err != nil {
-		c.JSON(http.StatusNotFound, dto.Response{
+		c.JSON(http.StatusNotFound, DTO.Response{
 			Success: false,
 			Error:   "User not found",
 		})
 		return
 	}
 
-	c.JSON(http.StatusOK, dto.Response{
+	c.JSON(http.StatusOK, DTO.Response{
 		Success: true,
 		Data:    user,
 	})

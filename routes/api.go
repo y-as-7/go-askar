@@ -4,19 +4,19 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/y-as-7/go-askar/app/controllers"
-	"github.com/y-as-7/go-askar/app/dto"
-	"github.com/y-as-7/go-askar/app/middleware"
+	"github.com/y-as-7/go-askar/app/Http/Controllers"
+	"github.com/y-as-7/go-askar/app/Http/Middleware"
+	"github.com/y-as-7/go-askar/app/DTO"
 )
 
-// SetupRoutes configures all application routes
-func SetupRoutes(router *gin.Engine) {
+// RegisterAPIRoutes registers all API routes
+func RegisterAPIRoutes(router *gin.Engine) {
 	// Initialize controllers
-	authCtrl := &controllers.AuthController{}
+	authCtrl := &Controllers.AuthController{}
 
 	// Health check
 	router.GET("/health", func(c *gin.Context) {
-		c.JSON(http.StatusOK, dto.Response{
+		c.JSON(http.StatusOK, DTO.Response{
 			Success: true,
 			Message: "API is running",
 		})
@@ -34,7 +34,7 @@ func SetupRoutes(router *gin.Engine) {
 
 		// Protected routes - require authentication
 		protected := v1.Group("")
-		protected.Use(middleware.AuthMiddleware())
+		protected.Use(Middleware.AuthMiddleware())
 		{
 			// Auth profile
 			protected.GET("/auth/profile", authCtrl.GetProfile)
@@ -43,7 +43,7 @@ func SetupRoutes(router *gin.Engine) {
 
 	// 404 handler
 	router.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusNotFound, dto.Response{
+		c.JSON(http.StatusNotFound, DTO.Response{
 			Success: false,
 			Error:   "Route not found",
 		})

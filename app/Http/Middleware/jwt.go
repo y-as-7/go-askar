@@ -1,4 +1,4 @@
-package middleware
+package Middleware
 
 import (
 	"net/http"
@@ -9,7 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/y-as-7/go-askar/app/dto"
+	"github.com/y-as-7/go-askar/app/DTO"
 )
 
 type Claims struct {
@@ -52,7 +52,7 @@ func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
-			c.JSON(http.StatusUnauthorized, dto.Response{
+			c.JSON(http.StatusUnauthorized, DTO.Response{
 				Success: false,
 				Error:   "Authorization header required",
 			})
@@ -62,7 +62,7 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		parts := strings.SplitN(authHeader, " ", 2)
 		if len(parts) != 2 || parts[0] != "Bearer" {
-			c.JSON(http.StatusUnauthorized, dto.Response{
+			c.JSON(http.StatusUnauthorized, DTO.Response{
 				Success: false,
 				Error:   "Invalid authorization header format",
 			})
@@ -82,7 +82,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		})
 
 		if err != nil || !token.Valid {
-			c.JSON(http.StatusUnauthorized, dto.Response{
+			c.JSON(http.StatusUnauthorized, DTO.Response{
 				Success: false,
 				Error:   "Invalid or expired token",
 			})
@@ -104,7 +104,7 @@ func AdminMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		role, exists := c.Get("user_role")
 		if !exists || role != "admin" {
-			c.JSON(http.StatusForbidden, dto.Response{
+			c.JSON(http.StatusForbidden, DTO.Response{
 				Success: false,
 				Error:   "Admin access required",
 			})

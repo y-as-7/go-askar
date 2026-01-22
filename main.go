@@ -1,11 +1,10 @@
 package main
 
 import (
-	"github.com/y-as-7/go-askar/foundation"
+	"github.com/y-as-7/go-askar/bootstrap"
 )
 
 func main() {
-	// Simple, clean entry point
-	app := foundation.NewApp()
+	app := bootstrap.NewApplication()
 	app.Run()
 }
