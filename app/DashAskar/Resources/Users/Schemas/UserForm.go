@@ -12,8 +12,9 @@ func UserForm(form *core.Form) {
 			Help("Please enter your first and last name").
 			ToComponent(),
 
-		core.EmailInput("email", "Email").
+		core.TextInput("email", "Email").
 			Required().
+			Email().
 			MaxLength(255).
 			Placeholder("user@example.com").
 			Help("This will be your login email address").

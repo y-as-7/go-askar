@@ -10,7 +10,7 @@ import (
 	console "github.com/y-as-7/go-askar/app/Console"
 )
 
-const Version = "1.4.0"
+const Version = "0.1.0"
 
 // ANSI Color Codes
 const (

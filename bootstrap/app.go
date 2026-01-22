@@ -18,7 +18,7 @@ import (
 	"github.com/y-as-7/go-askar/routes"
 )
 
-const Version = "1.4.0"
+const Version = "0.1.0"
 
 type Application struct {
 	Router *gin.Engine
