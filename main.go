@@ -113,7 +113,7 @@ func displayLogo() {
   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 ` + Reset + `
 ` + Magenta + `              A Laravel-inspired Go Framework` + Reset + `
-` + Yellow + `              Version 1.0.0` + Reset + `
+` + Yellow + `              Version 1.0.1 (Stable)` + Reset + `
 `
 	fmt.Print(logo)
 }
