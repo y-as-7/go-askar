@@ -26,8 +26,8 @@ if (-not $isProject) {
     Write-Host "==============================="
     
     # 1. Install Binary
-    Write-Host "📥 $($GREEN)Installing go-askar CLI v1.3.2...$($NC)"
-    go install github.com/y-as-7/go-askar/cmd/askar@v1.3.2
+    Write-Host "📥 $($GREEN)Installing go-askar CLI v1.3.3...$($NC)"
+    go install github.com/y-as-7/go-askar/cmd/go-askar@v1.3.3
     if ($LASTEXITCODE -ne 0) {
         Write-Host "$($RED)❌ Failed to install go-askar. Make sure Go is installed and in your PATH.$($NC)"
         exit 1

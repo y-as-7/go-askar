@@ -8,7 +8,7 @@ import (
 )
 
 // Application version
-const Version = "1.3.2"
+const Version = "1.3.3"
 
 type Application struct {
 	// Add core engine components here (e.g., Gin engine, GORM DB)
