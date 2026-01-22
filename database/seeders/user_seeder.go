@@ -1,7 +1,6 @@
 package seeders
 
 import (
-	"github.com/y-as-7/go-askar/app/Models"
 	"gorm.io/gorm"
 )
 

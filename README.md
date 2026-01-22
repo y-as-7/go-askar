@@ -115,6 +115,7 @@ go askar make:service Product             # Generate service file
 go askar make:controller Product          # Generate controller file
 go askar make:request StoreProduct        # Generate request validation file
 go askar make:middleware Auth             # Generate middleware file
+go askar make:view welcome              # Generate HTML view with HTMX+Alpine+Tailwind
 go askar make:migration create_users      # Generate migration file
 go askar make:command MyCommand           # Generate new CLI command
 go askar make:seeder UserSeeder           # Generate database seeder

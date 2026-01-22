@@ -1,0 +1,25 @@
+{{ define "pages/about" }}
+{{ template "layouts/header" . }}
+
+<main class="max-w-7xl mx-auto px-4 py-20">
+    <h1 class="text-4xl font-bold gradient-text">About Askar</h1>
+    <p class="mt-6 text-slate-400 text-lg">Askar is a modern web framework for Go inspired by Laravel's elegance.</p>
+    
+    <div class="mt-12 grid md:grid-cols-2 gap-8">
+        <div class="p-8 glass rounded-2xl">
+            <h2 class="text-xl font-bold mb-4">Our Vision</h2>
+            <p class="text-slate-400">To bring the simplicity and power of PHP's best framework to the performance and safety of Go.</p>
+        </div>
+        <div class="p-8 glass rounded-2xl">
+            <h2 class="text-xl font-bold mb-4">Interactivity</h2>
+            <div x-data="{ count: 0 }">
+                <button @click="count++" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition">
+                    Count is: <span x-text="count"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+{{ template "layouts/footer" . }}
+{{ end }}

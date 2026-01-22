@@ -3,9 +3,12 @@ package bootstrap
 import (
 	"context"
 	"fmt"
+	"html/template"
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
+	"strings"
 	"syscall"
 	"time"
 
@@ -30,6 +33,12 @@ func NewApplication() *Application {
 	router.Use(Middleware.Logger())
 	router.Use(gin.Recovery())
 	router.Use(Middleware.CORS())
+
+	// Serve static files from the public directory
+	router.Static("/public", "./public")
+
+	// Load HTML templates recursively
+	loadTemplates(router)
 	
 	// Load routes (Laravel-style separation)
 	routes.RegisterWebRoutes(router)
@@ -44,6 +53,26 @@ func NewApplication() *Application {
 		Router: router,
 		Server: server,
 	}
+}
+
+func loadTemplates(router *gin.Engine) {
+	templ := template.New("")
+	err := filepath.Walk("resources/views", func(path string, info os.FileInfo, err error) error {
+		if strings.HasSuffix(path, ".html") {
+			_, err = templ.ParseFiles(path)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+
+	if err != nil {
+		fmt.Printf("❌ Error loading templates: %v\n", err)
+		return
+	}
+	
+	router.SetHTMLTemplate(templ)
 }
 
 func (app *Application) Run() {
