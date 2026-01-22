@@ -8,6 +8,8 @@ import (
 	"regexp"
 	"strings"
 	"time"
+
+	"github.com/y-as-7/go-askar/app/console"
 )
 
 // ANSI color codes
@@ -28,24 +30,48 @@ func main() {
 	displayLogo()
 	time.Sleep(500 * time.Millisecond)
 
-	// Get subcommand and project name
+	// Context Detection: Are we in an askar project?
+	isInsideProject := false
+	if _, err := os.Stat("go.mod"); err == nil {
+		content, _ := os.ReadFile("go.mod")
+		if strings.Contains(string(content), "github.com/y-as-7/go-askar") {
+			isInsideProject = true
+		}
+	}
+
+	// Get subcommand
 	if len(os.Args) < 2 {
-		showUsage()
-		os.Exit(1)
+		showUsage(isInsideProject)
+		os.Exit(0)
 	}
 
 	command := os.Args[1]
 
-	switch command {
-	case "create/project", "create", "new":
+	// Handle Global Project Creation Commands
+	if command == "create/project" || command == "create" || command == "new" {
 		handleCreateCommand(command)
-	case "run":
-		handleRunCommand()
-	default:
-		printError("Unknown command: " + command)
-		showUsage()
-		os.Exit(1)
+		return
 	}
+
+	// Handle Framework-level Artisan Commands (Artisan Mode)
+	if isInsideProject {
+		err := console.Run(command, os.Args[1:])
+		if err != nil {
+			if strings.HasPrefix(err.Error(), "unknown command") {
+				printError(err.Error())
+				showUsage(true)
+			} else {
+				printError(err.Error())
+			}
+			os.Exit(1)
+		}
+		return
+	}
+
+	// Default fallback for unknown commands outside project
+	printError("Unknown command: " + command)
+	showUsage(false)
+	os.Exit(1)
 }
 
 func handleCreateCommand(command string) {
@@ -54,33 +80,33 @@ func handleCreateCommand(command string) {
 	if command == "create/project" {
 		if len(os.Args) < 3 {
 			printError("Please provide a project name")
-			showUsage()
+			showUsage(false)
 			os.Exit(1)
 		}
 		projectName = strings.TrimSpace(os.Args[2])
 	} else if command == "create" {
 		if len(os.Args) < 3 {
 			printError("Please provide a subcommand (e.g., project)")
-			showUsage()
+			showUsage(false)
 			os.Exit(1)
 		}
 		subcommand := os.Args[2]
 		if subcommand == "project" {
 			if len(os.Args) < 4 {
 				printError("Please provide a project name")
-				showUsage()
+				showUsage(false)
 				os.Exit(1)
 			}
 			projectName = strings.TrimSpace(os.Args[3])
 		} else {
 			printError("Unknown subcommand: " + subcommand)
-			showUsage()
+			showUsage(false)
 			os.Exit(1)
 		}
 	} else if command == "new" {
 		if len(os.Args) < 3 {
 			printError("Please provide a project name")
-			showUsage()
+			showUsage(false)
 			os.Exit(1)
 		}
 		projectName = strings.TrimSpace(os.Args[2])
@@ -113,39 +139,6 @@ func handleCreateCommand(command string) {
 	printSuccess(projectName)
 }
 
-func handleRunCommand() {
-	watch := false
-	if len(os.Args) > 2 && os.Args[2] == "--watch" {
-		watch = true
-	}
-
-	if watch {
-		printStep("👀 Starting server with hot reload...")
-		// Check if air is installed
-		if _, err := exec.LookPath("air"); err != nil {
-			printError("Hot reload requires 'air'. Please install it with:")
-			fmt.Println("   go install github.com/air-verse/air@latest")
-			os.Exit(1)
-		}
-
-		cmd := exec.Command("air")
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		if err := cmd.Run(); err != nil {
-			printError("Failed to start hot reload: " + err.Error())
-			os.Exit(1)
-		}
-	} else {
-		printStep("🚀 Starting server...")
-		cmd := exec.Command("go", "run", "main.go")
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		if err := cmd.Run(); err != nil {
-			printError("Failed to start server: " + err.Error())
-			os.Exit(1)
-		}
-	}
-}
 
 func displayLogo() {
 	logo := `
@@ -158,16 +151,37 @@ func displayLogo() {
   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 ` + Reset + `
 ` + Magenta + `              A Laravel-inspired Go Framework` + Reset + `
-` + Yellow + `              Version 1.1.0 (FEATURE RELEASE) ✨` + Reset + `
+` + Yellow + `              Version 1.2.0 (ARTISAN RELEASE) ✨` + Reset + `
 `
 	fmt.Print(logo)
 }
 
-func showUsage() {
+func showUsage(isInsideProject bool) {
 	fmt.Printf("\n%sUsage:%s\n", Bold, Reset)
-	fmt.Printf("  go-askar create/project %s<project-name>%s\n\n", Cyan, Reset)
+	
+	if !isInsideProject {
+		fmt.Printf("  go askar create/project %s<project-name>%s\n", Cyan, Reset)
+		fmt.Printf("  go askar new %s<project-name>%s\n\n", Cyan, Reset)
+	} else {
+		fmt.Printf("  go askar %s<command>%s [options]\n\n", Cyan, Reset)
+		fmt.Printf("%sAvailable commands:%s\n", Bold, Reset)
+		
+		cmds := console.GetCommands()
+		for name, cmd := range cmds {
+			// Skip aliases or duplicates if any
+			if name == "run" { continue }
+			fmt.Printf("  %-15s %s\n", Green+name+Reset, cmd.Description)
+		}
+		fmt.Println("")
+	}
+
 	fmt.Printf("%sExample:%s\n", Bold, Reset)
-	fmt.Printf("  go-askar create/project my-shop\n\n")
+	if !isInsideProject {
+		fmt.Printf("  go askar create/project my-shop\n")
+	} else {
+		fmt.Printf("  go askar serve --watch\n")
+	}
+	fmt.Println("")
 }
 
 func printStep(message string) {
