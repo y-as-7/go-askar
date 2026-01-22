@@ -8,24 +8,23 @@ This guide will walk you through installing and setting up a new project using t
 - Git
 - (Optional) PostgreSQL or MySQL if not using SQLite
 
-## Method 1: CLI Tool (Recommended)
+## Quick Installation
 
-### Install the CLI
+### 1. Install the CLI Tool
 
 ```bash
-go install github.com/yourusername/go-askar/cmd/askar@latest
+go install github.com/y-as-7/go-askar@latest
 ```
 
 Make sure `$GOPATH/bin` is in your PATH.
 
-### Create a New Project
+### 2. Create a New Project
 
 ```bash
 askar new my-project
 ```
 
-The CLI will:
-- Display a beautiful 3D logo
+The CLI will display a beautiful interface and automatically:
 - Clone the framework
 - Configure your project
 - Update all imports
@@ -74,7 +73,7 @@ The CLI will:
 Happy coding! 🎉
 ```
 
-### Run Your Project
+### 3. Run Your Project
 
 ```bash
 cd my-project
@@ -82,27 +81,16 @@ cp .env.example .env
 make run
 ```
 
-## Method 2: Manual Installation
+Your API will be running at `http://localhost:8080`!
 
-### 1. Clone the Repository
+## Alternative: Manual Installation
+
+If you prefer not to use the CLI tool:
 
 ```bash
-git clone https://github.com/yourusername/go-askar my-project
+git clone https://github.com/y-as-7/go-askar my-project
 cd my-project
-```
-
-### 2. Run the Installation Script
-
-```bash
 ./install.sh
-```
-
-The script will prompt you for a project name and automatically configure everything.
-
-### 3. Run the Application
-
-```bash
-make run
 ```
 
 ## Configuration
@@ -225,4 +213,4 @@ PORT=3000
 
 ## Support
 
-If you encounter any issues, please check the [GitHub Issues](https://github.com/yourusername/go-askar/issues).
+If you encounter any issues, please check the [GitHub Issues](https://github.com/y-as-7/go-askar/issues).

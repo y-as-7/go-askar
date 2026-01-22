@@ -31,7 +31,8 @@ func main() {
 	// Get project name
 	if len(os.Args) < 2 {
 		printError("Please provide a project name")
-		fmt.Printf("\n%sUsage:%s askar new %s<project-name>%s\n\n", Bold, Reset, Cyan, Reset)
+		fmt.Printf("\n%sUsage:%s go-askar %s<project-name>%s\n\n", Bold, Reset, Cyan, Reset)
+		fmt.Printf("%sExample:%s go-askar my-shop\n\n", Bold, Reset)
 		os.Exit(1)
 	}
 
@@ -133,7 +134,7 @@ func cloneFramework(projectName string) error {
 		}
 	}()
 
-	cmd := exec.Command("git", "clone", "https://github.com/yourusername/go-askar.git", projectName)
+	cmd := exec.Command("git", "clone", "https://github.com/y-as-7/go-askar.git", projectName)
 	err := cmd.Run()
 	
 	done <- true

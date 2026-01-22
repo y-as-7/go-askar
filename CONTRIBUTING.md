@@ -32,7 +32,7 @@ We love feature suggestions! Please create an issue describing:
 ## Development Setup
 
 ```bash
-git clone https://github.com/yourusername/go-askar
+git clone https://github.com/y-as-7/go-askar
 cd go-askar
 go mod tidy
 make run

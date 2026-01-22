@@ -14,36 +14,31 @@ go-askar is a Laravel-inspired Go web application framework with expressive, ele
 - **Powerful ORM** - GORM integration with automatic migrations
 - **Secure by Default** - bcrypt password hashing and JWT token management
 - **Clean Architecture** - Well-organized MVC structure
-- **Quick Installation** - Get your API running in seconds
+- **One-Command Installation** - Get your API running in seconds
 - **Comprehensive Documentation** - Detailed guides for every feature
 
 go-askar is accessible, powerful, and provides tools required for building robust RESTful APIs.
 
 ## Installation
 
-### Global Installation (Recommended)
-
-Install the go-askar CLI tool globally:
+Install the CLI tool:
 
 ```bash
-go install github.com/yourusername/go-askar/cmd/askar@latest
+go install github.com/y-as-7/go-askar@latest
 ```
 
 Create a new project:
 
 ```bash
-askar new my-project
+go-askar my-project
 ```
 
-### Manual Installation
-
-Clone and run the installation script:
-
-```bash
-git clone https://github.com/yourusername/go-askar my-project
-cd my-project
-./install.sh
-```
+That's it! Just like Laravel's `composer create-project`, one simple command creates your entire project with:
+- 🎨 Beautiful 3D logo display
+- 📦 Automatic framework download
+- ⚙️ Complete configuration
+- 🔐 Secure JWT secret generation
+- 📥 Dependency installation
 
 ## Quick Start
 
@@ -64,8 +59,6 @@ go-askar has comprehensive documentation to help you get started:
 - **[Installation Guide](docs/installation.md)** - Complete setup instructions
 - **[Authentication](docs/authentication.md)** - User authentication and JWT tokens
 - **[Database Guide](docs/database.md)** - Working with models and migrations
-
-You can also explore the codebase - it's designed to be readable and self-documenting.
 
 ## Project Structure
 
@@ -97,12 +90,12 @@ GET  /health                 # Health check
 GET /api/v1/auth/profile     # Get user profile (requires JWT)
 ```
 
-## CLI Tool
+## CLI Tool Features
 
-The `askar` command provides a beautiful installation experience:
+The `go-askar` command provides a beautiful installation experience:
 
 ```
-   ██████╗  ██████╗        █████╗ ███████╗██╡  ██╗ █████╗ ██████╗ 
+   ██████╗  ██████╗        █████╗ ███████╗██╗  ██╗ █████╗ ██████╗ 
   ██╔════╝ ██╔═══██╗      ██╔══██╗██╔════╝██║ ██╔╝██╔══██╗██╔══██╗
   ██║  ███╗██║   ██║█████╗███████║███████╗█████╔╝ ███████║██████╔╝
   ██║   ██║██║   ██║╚════╝██╔══██║╚════██║██╔═██╗ ██╔══██║██╔══██╗
@@ -112,7 +105,6 @@ The `askar` command provides a beautiful installation experience:
               A Laravel-inspired Go Framework
 ```
 
-Features:
 - 🎨 Colorful terminal output
 - ⚡ Animated loading indicators
 - ✨ 3D ASCII art logo
