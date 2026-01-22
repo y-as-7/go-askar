@@ -7,18 +7,30 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/y-as-7/go-askar/pkg/ui"
+	"github.com/y-as-7/go-askar/routes"
 )
 
 // Application version
 const Version = "1.3.3"
 
 type Application struct {
-	// Add core engine components here (e.g., Gin engine, GORM DB)
+	Router *gin.Engine
 }
 
 func NewApp() *Application {
-	return &Application{}
+	// Set Gin mode
+	gin.SetMode(gin.ReleaseMode)
+	
+	router := gin.Default()
+	
+	// Initialize routes
+	routes.SetupRoutes(router)
+	
+	return &Application{
+		Router: router,
+	}
 }
 
 func (app *Application) Run() {
@@ -27,9 +39,14 @@ func (app *Application) Run() {
 
 	ui.PrintStep("Starting askar application...")
 	
-	// Mock server start logic for now
-	// In a real scenario, this would initialize DB, load routes, and Run Gin
-	fmt.Printf("\n  %s✓%s Server listening on :8080\n\n", ui.Green, ui.Reset)
+	// Start server in a goroutine so we can handle signals
+	go func() {
+		if err := app.Router.Run(":8080"); err != nil {
+			ui.PrintError("Failed to start server: " + err.Error())
+		}
+	}()
+
+	fmt.Printf("\n  %s✓%s Server listening on :http://localhost:8080\n\n", ui.Green, ui.Reset)
 	
 	// Wait for interruption signal to gracefully shutdown
 	quit := make(chan os.Signal, 1)
