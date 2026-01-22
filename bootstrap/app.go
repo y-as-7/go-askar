@@ -2,6 +2,7 @@ package bootstrap
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"net/http"
@@ -80,6 +81,10 @@ func loadTemplates(router *gin.Engine) {
 		"add": func(a, b int) int {
 			return a + b
 		},
+		"marshal": func(v interface{}) string {
+			a, _ := json.Marshal(v)
+			return string(a)
+		},
 	}
 
 	templ = template.New("").Funcs(funcMap)
@@ -96,7 +101,18 @@ func loadTemplates(router *gin.Engine) {
 	})
 
 	// Load library views (DashAskar)
-	filepath.Walk("library/dash-askar/resources/views", func(path string, info os.FileInfo, err error) error {
+	filepath.Walk("pkg/dash-askar/resources/views", func(path string, info os.FileInfo, err error) error {
+		if strings.HasSuffix(path, ".html") {
+			_, err = templ.ParseFiles(path)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+
+	// Load debugger views
+	filepath.Walk("pkg/debugger/resources/views", func(path string, info os.FileInfo, err error) error {
 		if strings.HasSuffix(path, ".html") {
 			_, err = templ.ParseFiles(path)
 			if err != nil {

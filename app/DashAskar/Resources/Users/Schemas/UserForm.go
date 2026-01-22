@@ -1,6 +1,6 @@
 package Schemas
 
-import "github.com/y-as-7/go-askar/library/dash-askar/core"
+import "github.com/y-as-7/go-askar/pkg/dash-askar/core"
 
 func UserForm(form *core.Form) {
 	form.Schema = []core.Component{

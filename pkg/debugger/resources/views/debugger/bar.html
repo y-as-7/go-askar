@@ -1,0 +1,137 @@
+{{ define "debugger/bar" }}
+<div x-data="{ 
+    open: localStorage.getItem('askar_debugger_open') === 'true', 
+    tab: localStorage.getItem('askar_debugger_tab') || 'queries',
+    data: {{ marshal .AskarDebuggerData }}
+}" 
+x-init="$watch('open', value => localStorage.setItem('askar_debugger_open', value)); $watch('tab', value => localStorage.setItem('askar_debugger_tab', value))"
+class="fixed bottom-0 left-0 right-0 z-[9999] font-sans">
+    
+    <!-- Collapsed Bar -->
+    <div @click="open = !open" 
+         class="h-10 bg-[#111827] border-t border-slate-800 flex items-center justify-between px-4 cursor-pointer hover:bg-[#1f2937] transition-colors shadow-2xl">
+        <div class="flex items-center gap-6 text-[11px] font-bold tracking-wider uppercase">
+            <div class="flex items-center gap-2">
+                <span class="text-blue-400">⚡</span>
+                <span class="text-slate-200">AskarDebugger</span>
+            </div>
+            
+            <div class="flex items-center gap-4 text-slate-400">
+                <div class="flex items-center gap-1.5">
+                    <span class="text-indigo-400">⏱️</span>
+                    <span x-text="(data.duration / 1000000).toFixed(2) + 'ms'"></span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="text-emerald-400">💾</span>
+                    <span x-text="data.queries.length + ' queries'"></span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="text-orange-400">📜</span>
+                    <span x-text="data.logs.length + ' logs'"></span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex items-center gap-4 text-slate-500 hover:text-slate-300">
+            <template x-if="!open">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
+            </template>
+            <template x-if="open">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+            </template>
+        </div>
+    </div>
+
+    <!-- Expanded Content -->
+    <div x-show="open" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="translate-y-full"
+         x-transition:enter-end="translate-y-0"
+         class="h-[400px] bg-[#0b0f19] border-t border-slate-800 flex flex-col shadow-inner">
+        
+        <!-- Tabs -->
+        <div class="flex border-b border-slate-800 bg-[#111827]/50">
+            <button @click="tab = 'queries'" :class="tab === 'queries' ? 'bg-[#1f2937] text-white border-b-2 border-blue-500' : 'text-slate-400 hover:bg-[#1f2937]'" class="px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all">Queries</button>
+            <button @click="tab = 'logs'" :class="tab === 'logs' ? 'bg-[#1f2937] text-white border-b-2 border-blue-500' : 'text-slate-400 hover:bg-[#1f2937]'" class="px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all">Logs</button>
+            <button @click="tab = 'views'" :class="tab === 'views' ? 'bg-[#1f2937] text-white border-b-2 border-blue-500' : 'text-slate-400 hover:bg-[#1f2937]'" class="px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all">Views</button>
+            <button @click="tab = 'timeline'" :class="tab === 'timeline' ? 'bg-[#1f2937] text-white border-b-2 border-blue-500' : 'text-slate-400 hover:bg-[#1f2937]'" class="px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all">Timeline</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="flex-1 overflow-auto p-4 custom-scrollbar">
+            
+            <!-- Queries Tab -->
+            <div x-show="tab === 'queries'" class="space-y-2">
+                <template x-for="query in data.queries" :key="query.time">
+                    <div class="p-3 bg-[#111827] border border-slate-800 rounded-lg group hover:border-blue-500/30 transition-colors">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-mono text-blue-400 font-bold px-2 py-0.5 bg-blue-500/10 rounded">SELECT</span>
+                            <span class="text-[10px] font-mono text-slate-500" x-text="(query.duration / 1000000).toFixed(4) + ' ms'"></span>
+                        </div>
+                        <code class="text-xs text-slate-300 font-mono block whitespace-pre-wrap leading-relaxed" x-text="query.sql"></code>
+                    </div>
+                </template>
+                <div x-show="data.queries.length === 0" class="text-center py-12 text-slate-500 text-sm italic">No queries captured for this request.</div>
+            </div>
+
+            <!-- Logs Tab -->
+            <div x-show="tab === 'logs'" class="space-y-1">
+                <template x-for="log in data.logs" :key="log.time">
+                    <div class="flex items-center gap-3 p-2 hover:bg-[#111827] rounded transition-colors border-b border-slate-800/50">
+                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded uppercase" 
+                              :class="{
+                                  'bg-green-500/10 text-green-400': log.level === 'info',
+                                  'bg-red-500/10 text-red-400': log.level === 'error',
+                                  'bg-yellow-500/10 text-yellow-400': log.level === 'warn'
+                              }" x-text="log.level"></span>
+                        <span class="text-xs text-slate-300 font-mono" x-text="log.message"></span>
+                    </div>
+                </template>
+                <div x-show="data.logs.length === 0" class="text-center py-12 text-slate-500 text-sm italic">No logs captured.</div>
+            </div>
+
+            <!-- Views Tab -->
+            <div x-show="tab === 'views'" class="space-y-2">
+                <template x-for="view in data.views" :key="view">
+                    <div class="flex items-center gap-3 p-3 bg-[#111827] border border-slate-800 rounded-lg">
+                        <span class="text-indigo-400">🖼️</span>
+                        <span class="text-xs text-slate-300 font-mono" x-text="view"></span>
+                    </div>
+                </template>
+                <div x-show="data.views.length === 0" class="text-center py-12 text-slate-500 text-sm italic">No templates tracked.</div>
+            </div>
+
+            <!-- Timeline Tab -->
+            <div x-show="tab === 'timeline'" class="space-y-4">
+                <div class="flex items-center gap-4 text-xs">
+                    <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                        <div class="bg-blue-500 h-full" style="width: 100%"></div>
+                    </div>
+                    <span class="whitespace-nowrap text-slate-400 font-mono" x-text="(data.duration / 1000000).toFixed(2) + ' ms'"></span>
+                </div>
+                <div class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Request Lifecycle</div>
+                <div class="space-y-3 border-l-2 border-slate-800 ml-2 pl-4">
+                    <div class="relative">
+                        <div class="absolute -left-[21px] top-1 w-2 h-2 rounded-full bg-blue-500"></div>
+                        <div class="text-xs text-slate-300 font-medium">Request Started</div>
+                        <div class="text-[10px] text-slate-500" x-text="new Date(data.start_time).toLocaleTimeString()"></div>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute -left-[21px] top-1 w-2 h-2 rounded-full bg-emerald-500"></div>
+                        <div class="text-xs text-slate-300 font-medium">Processing Finished</div>
+                        <div class="text-[10px] text-slate-500" x-text="(data.duration / 1000000).toFixed(2) + ' ms total'"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 10px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #374151; }
+</style>
+{{ end }}

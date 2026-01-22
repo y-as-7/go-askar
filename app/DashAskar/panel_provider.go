@@ -3,7 +3,7 @@ package DashAskar
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/y-as-7/go-askar/app/DashAskar/Resources/Users"
-	"github.com/y-as-7/go-askar/library/dash-askar/core"
+	"github.com/y-as-7/go-askar/pkg/dash-askar/core"
 )
 
 func PanelProvider() *core.DashAskar {

@@ -1,0 +1,60 @@
+{{ define "dash-askar/auth/login" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .title }} - DashAskar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#0b0f19] text-slate-200 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md p-8 bg-[#111827] border border-slate-800 rounded-2xl shadow-2xl relative overflow-hidden">
+        <!-- Glow Effect -->
+        <div class="absolute -top-24 -left-24 w-48 h-48 bg-blue-600/10 blur-[100px]"></div>
+        <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-indigo-600/10 blur-[100px]"></div>
+
+        <div class="relative z-10">
+            <div class="text-center mb-10">
+                <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent mb-2">DashAskar</h1>
+                <p class="text-slate-400 text-sm">Please sign in to your admin account</p>
+            </div>
+
+            {{ if .error }}
+            <div class="mb-6 p-4 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm">
+                {{ .error }}
+            </div>
+            {{ end }}
+
+            <form action="/admin/login" method="POST" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-slate-400 mb-2">Email Address</label>
+                    <input type="email" id="email" name="email" required 
+                        class="w-full bg-[#0b0f19] border border-slate-700 rounded-lg px-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder-slate-600"
+                        placeholder="admin@example.com">
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-slate-400 mb-2">Password</label>
+                    <input type="password" id="password" name="password" required 
+                        class="w-full bg-[#0b0f19] border border-slate-700 rounded-lg px-4 py-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder-slate-600"
+                        placeholder="••••••••">
+                </div>
+
+                <button type="submit" 
+                    class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 rounded-lg shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="mt-8 text-center text-xs text-slate-500">
+                &copy; 2026 DashAskar Framework. All rights reserved.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+{{ end }}

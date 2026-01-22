@@ -4,7 +4,7 @@ import (
 	"github.com/y-as-7/go-askar/app/DashAskar/Resources/Users/Infolists"
 	"github.com/y-as-7/go-askar/app/DashAskar/Resources/Users/Schemas"
 	"github.com/y-as-7/go-askar/app/DashAskar/Resources/Users/Tables"
-	"github.com/y-as-7/go-askar/library/dash-askar/core"
+	"github.com/y-as-7/go-askar/pkg/dash-askar/core"
 )
 
 type UserResource struct{}

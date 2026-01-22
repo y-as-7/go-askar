@@ -1,6 +1,6 @@
 package Infolists
 
-import "github.com/y-as-7/go-askar/library/dash-askar/core"
+import "github.com/y-as-7/go-askar/pkg/dash-askar/core"
 
 func UserInfolist(infolist *core.Infolist) {
 	infolist.Schema = []core.Entry{

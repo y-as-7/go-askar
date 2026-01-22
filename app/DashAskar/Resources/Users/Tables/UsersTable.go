@@ -1,6 +1,6 @@
 package Tables
 
-import "github.com/y-as-7/go-askar/library/dash-askar/core"
+import "github.com/y-as-7/go-askar/pkg/dash-askar/core"
 
 func UsersTable(table *core.Table) {
 	table.Columns = []core.Column{
