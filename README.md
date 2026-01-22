@@ -7,7 +7,7 @@
 
 ## About askar
 
-askar is a Laravel-inspired Go web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. askar takes the pain out of development by easing common tasks used in many web projects, such as:
+askar is an expressive Go web application framework with elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. askar takes the pain out of development by easing common tasks used in many web projects, such as:
 
 - **Built-in Authentication System** - Complete JWT-based user authentication out of the box
 - **Multi-Database Support** - SQLite, PostgreSQL, and MySQL support
@@ -46,7 +46,8 @@ go askar create/project my-app
 > [!TIP]
 > If you get "command not found", run: `export PATH=$PATH:$(go env GOPATH)/bin`
 
-That's it! Just like Laravel's `composer create-project`, one simple command creates your entire project with:
+> [!TIP]
+> One simple command creates your entire project with:
 - 🎨 Beautiful 3D logo display
 - 📦 Automatic framework download
 - ⚙️ Complete configuration
@@ -134,13 +135,14 @@ go askar key:generate                    # Generate JWT secret
   ╚██████╔╝╚██████╔╝      ██║  ██║███████║██║  ██╗██║  ██║██║  ██║
    ╚═════╝  ╚═════╝       ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 
-              A Laravel-inspired Go Framework
+              The Expressive Go Framework
 ```
 
 - 🎨 Colorful terminal output
 - ⚡ Animated loading indicators
-- ✨ 3D ASCII art logo
 - 📦 Automatic project setup
+- 🔌 Dynamic API Versioning helper
+- ✨ 3D ASCII art logo
 
 ## Contributing
 

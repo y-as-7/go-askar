@@ -40,19 +40,26 @@ func NewApplication() *Application {
 	// Load HTML templates recursively
 	loadTemplates(router)
 	
-	// Load routes (Laravel-style separation)
+	// Load routes (Expressive separation)
 	routes.RegisterWebRoutes(router)
 	routes.RegisterAPIRoutes(router)
 	
-	server := &http.Server{
+	app := &Application{
+		Router: router,
+	}
+
+	app.Server = &http.Server{
 		Addr:    ":8080",
 		Handler: router,
 	}
 	
-	return &Application{
-		Router: router,
-		Server: server,
-	}
+	return app
+}
+
+// VersionedAPI creates a new API version group
+func (app *Application) VersionedAPI(version string, registerFunc func(*gin.RouterGroup)) {
+	apiGroup := app.Router.Group("/api/" + version)
+	registerFunc(apiGroup)
 }
 
 func loadTemplates(router *gin.Engine) {
@@ -112,7 +119,7 @@ func displayLogo() {
   ██║  ██║███████║██║  ██╗██║  ██║██║  ██║
   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 
-              A Laravel-inspired Go Framework
+              The Expressive Go Framework
               Version ` + Version + ` ✨
 `
 	fmt.Println(logo)
