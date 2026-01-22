@@ -1,4 +1,4 @@
-module order-system
+module github.com/y-as-7/go-askar
 
 go 1.23
 
