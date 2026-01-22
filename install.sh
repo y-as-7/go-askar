@@ -24,8 +24,8 @@ if [ "$IS_PROJECT" = false ]; then
     echo "==============================="
     
     # 1. Install Binary
-    echo -e "📥 ${GREEN}Installing go-askar CLI...${NC}"
-    go install github.com/y-as-7/go-askar@latest || { echo -e "${RED}❌ Failed to install go-askar. Make sure Go is installed.${NC}"; exit 1; }
+    echo -e "📥 ${GREEN}Force updating go-askar CLI...${NC}"
+    GOPROXY=direct go install -v -a github.com/y-as-7/go-askar@latest || { echo -e "${RED}❌ Failed to install go-askar. Make sure Go is installed.${NC}"; exit 1; }
     
     # 2. Configure Shell Alias (The Magic Trick)
     MAGIC_FUNC='go() { if [ "$1" == "askar" ]; then shift; go-askar "$@"; else command go "$@"; fi; }'
