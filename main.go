@@ -6,8 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"order-system/config"
-	"order-system/routes"
+	"github.com/y-as-7/go-askar/config"
+	"github.com/y-as-7/go-askar/routes"
 )
 
 func main() {

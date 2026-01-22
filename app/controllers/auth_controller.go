@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"order-system/config"
-	"order-system/app/dto"
-	"order-system/app/middleware"
-	"order-system/app/models"
+	"github.com/y-as-7/go-askar/config"
+	"github.com/y-as-7/go-askar/app/dto"
+	"github.com/y-as-7/go-askar/app/middleware"
+	"github.com/y-as-7/go-askar/app/models"
 )
 
 type AuthController struct{}

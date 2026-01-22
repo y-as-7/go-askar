@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"order-system/app/controllers"
-	"order-system/app/dto"
-	"order-system/app/middleware"
+	"github.com/y-as-7/go-askar/app/controllers"
+	"github.com/y-as-7/go-askar/app/dto"
+	"github.com/y-as-7/go-askar/app/middleware"
 )
 
 // SetupRoutes configures all application routes

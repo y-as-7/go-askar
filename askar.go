@@ -220,7 +220,7 @@ func updateImports(projectName string) error {
 				return err
 			}
 
-			updated := strings.ReplaceAll(string(content), "order-system/", projectName+"/")
+			updated := strings.ReplaceAll(string(content), "github.com/y-as-7/go-askar/", projectName+"/")
 			return os.WriteFile(path, []byte(updated), 0644)
 		}
 
