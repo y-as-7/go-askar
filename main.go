@@ -28,15 +28,24 @@ func main() {
 	displayLogo()
 	time.Sleep(500 * time.Millisecond)
 
-	// Get project name
-	if len(os.Args) < 2 {
-		printError("Please provide a project name")
-		fmt.Printf("\n%sUsage:%s go-askar %s<project-name>%s\n\n", Bold, Reset, Cyan, Reset)
-		fmt.Printf("%sExample:%s go-askar my-shop\n\n", Bold, Reset)
+	// Get subcommand and project name
+	if len(os.Args) < 3 {
+		printError("Please provide a subcommand and project name")
+		fmt.Printf("\n%sUsage:%s go-askar new %s<project-name>%s\n\n", Bold, Reset, Cyan, Reset)
+		fmt.Printf("%sExample:%s go-askar new my-shop\n\n", Bold, Reset)
 		os.Exit(1)
 	}
 
-	projectName := os.Args[1]
+	subcommand := os.Args[1]
+	projectName := os.Args[2]
+
+	// Validate subcommand
+	if subcommand != "new" {
+		printError("Unknown subcommand: " + subcommand)
+		fmt.Printf("\n%sAvailable commands:%s\n", Bold, Reset)
+		fmt.Printf("  go-askar new %s<project-name>%s  - Create a new project\n\n", Cyan, Reset)
+		os.Exit(1)
+	}
 
 	// Validate project name
 	if !isValidProjectName(projectName) {
