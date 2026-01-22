@@ -27,4 +27,7 @@ func (app *Application) Run() {
 	// Mock server start logic for now
 	// In a real scenario, this would initialize DB, load routes, and Run Gin
 	fmt.Printf("\n  %s✓%s Server listening on :8080\n\n", ui.Green, ui.Reset)
+	
+	// Block forever (representing a running server)
+	select {}
 }
