@@ -30,12 +30,11 @@ go install github.com/y-as-7/go-askar@latest
 Create a new project:
 
 ```bash
-go run main.go create/project my-project
+go-askar create/project my-project
 ```
-or if installed globally:
-```bash
-askar create/project my-project
-```
+
+> [!TIP]
+> If you get "command not found", run: `export PATH=$PATH:$(go env GOPATH)/bin`
 
 That's it! Just like Laravel's `composer create-project`, one simple command creates your entire project with:
 - 🎨 Beautiful 3D logo display

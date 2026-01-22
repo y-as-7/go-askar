@@ -1,6 +1,6 @@
 package dto
 
-import "github.com/y-as-7/askar/app/models"
+import "github.com/y-as-7/go-askar/app/models"
 
 // Response is the generic API response structure
 type Response struct {

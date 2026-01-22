@@ -21,7 +21,7 @@ run: ## Run the application
 	go run main.go
 
 build: ## Build the application
-	go build -o bin/askar main.go
+	go build -o bin/go-askar main.go
 
 clean: ## Clean build artifacts
 	rm -rf bin/

@@ -120,9 +120,9 @@ func displayLogo() {
 
 func showUsage() {
 	fmt.Printf("\n%sUsage:%s\n", Bold, Reset)
-	fmt.Printf("  askar create/project %s<project-name>%s\n\n", Cyan, Reset)
+	fmt.Printf("  go-askar create/project %s<project-name>%s\n\n", Cyan, Reset)
 	fmt.Printf("%sExample:%s\n", Bold, Reset)
-	fmt.Printf("  askar create/project my-shop\n\n")
+	fmt.Printf("  go-askar create/project my-shop\n\n")
 }
 
 func printStep(message string) {
@@ -139,7 +139,7 @@ func printSuccess(projectName string) {
 	box := `
   ╔════════════════════════════════════════════════════════════╗
   ║                                                            ║
-  ║  ` + Green + `✓` + Reset + ` Your askar project is ready!                         ║
+  ║  ` + Green + `✓` + Reset + ` Your go-askar project is ready!                      ║
   ║                                                            ║
   ║  ` + Cyan + `Next steps:` + Reset + `                                            ║
   ║                                                            ║
@@ -276,7 +276,7 @@ func updateImports(projectName string) error {
 				return err
 			}
 
-			updated := strings.ReplaceAll(string(content), "github.com/y-as-7/askar/", projectName+"/")
+			updated := strings.ReplaceAll(string(content), "github.com/y-as-7/go-askar/", projectName+"/")
 			return os.WriteFile(path, []byte(updated), 0644)
 		}
 
