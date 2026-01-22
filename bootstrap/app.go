@@ -14,6 +14,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/y-as-7/go-askar/app/Http/Middleware"
+	"github.com/y-as-7/go-askar/config"
 	"github.com/y-as-7/go-askar/routes"
 )
 
@@ -25,6 +26,9 @@ type Application struct {
 }
 
 func NewApplication() *Application {
+	// Initialize Database
+	config.ConnectDatabase()
+
 	gin.SetMode(gin.ReleaseMode)
 	
 	router := gin.New()
@@ -63,8 +67,22 @@ func (app *Application) VersionedAPI(version string, registerFunc func(*gin.Rout
 }
 
 func loadTemplates(router *gin.Engine) {
-	templ := template.New("")
-	err := filepath.Walk("resources/views", func(path string, info os.FileInfo, err error) error {
+	var templ *template.Template
+	
+	funcMap := template.FuncMap{
+		"render": func(name string, data interface{}) (template.HTML, error) {
+			var buf strings.Builder
+			if err := templ.ExecuteTemplate(&buf, name, data); err != nil {
+				return "", err
+			}
+			return template.HTML(buf.String()), nil
+		},
+	}
+
+	templ = template.New("").Funcs(funcMap)
+	
+	// Load application views
+	filepath.Walk("resources/views", func(path string, info os.FileInfo, err error) error {
 		if strings.HasSuffix(path, ".html") {
 			_, err = templ.ParseFiles(path)
 			if err != nil {
@@ -74,10 +92,16 @@ func loadTemplates(router *gin.Engine) {
 		return nil
 	})
 
-	if err != nil {
-		fmt.Printf("❌ Error loading templates: %v\n", err)
-		return
-	}
+	// Load library views (DashAskar)
+	filepath.Walk("library/dash-askar/resources/views", func(path string, info os.FileInfo, err error) error {
+		if strings.HasSuffix(path, ".html") {
+			_, err = templ.ParseFiles(path)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
 	
 	router.SetHTMLTemplate(templ)
 }

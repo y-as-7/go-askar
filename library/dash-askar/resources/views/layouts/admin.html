@@ -1,0 +1,89 @@
+{{ define "dash-askar/layouts/admin" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .title }} - DashAskar</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#0b0f19] text-slate-200">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-[#111827] border-r border-slate-800 flex-shrink-0">
+            <div class="h-16 flex items-center px-6 border-b border-slate-800">
+                <span class="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-500 bg-clip-text text-transparent">DashAskar</span>
+            </div>
+            <nav class="p-4 space-y-2">
+                <a href="/admin" class="flex items-center px-4 py-2 rounded-lg bg-blue-600/10 text-blue-400 border border-blue-500/20">
+                    <span class="mr-3">📊</span> Dashboard
+                </a>
+
+                <div class="pt-4 pb-2 px-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Resources</div>
+                {{ range .nav }}
+                <a href="/admin/{{ .Slug }}" class="flex items-center px-4 py-2 rounded-lg hover:bg-slate-800 transition text-slate-400 hover:text-white">
+                    <span class="mr-3">{{ or .Icon "📁" }}</span> {{ .Label }}
+                </a>
+                {{ end }}
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto bg-[#0b0f19]">
+            <header class="h-16 border-b border-slate-800 flex items-center justify-between px-8 bg-[#0b0f19]/50 backdrop-blur-md sticky top-0 z-10">
+                <h1 class="text-lg font-semibold">{{ .title }}</h1>
+                <div class="flex items-center gap-4">
+                    <div x-data="{ open: false }" class="relative">
+                        <button @click="open = !open" @click.away="open = false" class="flex items-center gap-3 hover:bg-slate-800/50 px-3 py-1.5 rounded-xl transition group">
+                            <div class="flex flex-col items-end mr-1">
+                                <span class="text-sm font-medium text-slate-200">Admin User</span>
+                                <span class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Administrator</span>
+                            </div>
+                            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-indigo-500/20 flex items-center justify-center text-blue-400 font-bold text-sm ring-1 ring-blue-500/30 group-hover:ring-blue-500/50 transition-all">
+                                AU
+                            </div>
+                        </button>
+
+                        <!-- Dropdown -->
+                        <div x-show="open" 
+                             x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             class="absolute right-0 mt-2 w-48 bg-[#111827] border border-slate-800 rounded-xl shadow-2xl py-2 z-50 ring-1 ring-white/5" 
+                             style="display: none;">
+                            <div class="px-4 py-2 border-b border-slate-800 mb-1">
+                                <p class="text-xs text-slate-500 font-medium">Signed in as</p>
+                                <p class="text-sm font-semibold truncate">admin@admin.com</p>
+                            </div>
+                            <a href="/admin/profile" class="flex items-center px-4 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                                <span class="mr-2">👤</span> Profile
+                            </a>
+                            <a href="/admin/settings" class="flex items-center px-4 py-2 text-sm text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                                <span class="mr-2">⚙️</span> Settings
+                            </a>
+                            <div class="h-px bg-slate-800 my-1"></div>
+                            <a href="/admin/logout" class="flex items-center px-4 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-500/10 transition">
+                                <span class="mr-2">🚪</span> Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="p-8">
+                {{ render .ContentName . }}
+            </div>
+        </main>
+    </div>
+</body>
+</html>
+{{ end }}
