@@ -21,35 +21,20 @@ askar is accessible, powerful, and provides tools required for building robust R
 
 ## Installation
 
-Install the CLI tool:
+Install the **askar** CLI tool and configure your terminal in one command:
 
 ```bash
-go install github.com/y-as-7/go-askar@latest
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/y-as-7/go-askar/main/install.sh)"
 ```
 
-Create a new project:
+Once installed, restart your terminal or run `source ~/.bashrc` (or `~/.zshrc`).
+
+## Creating an Application
+
+After you have installed the CLI, you're ready to create a new application:
 
 ```bash
-go-askar create/project my-project
-```
-
-### ✨ Magic Trick: Use `go askar`
-If you really want to run it as **`go askar`**, add this to your `~/.bashrc` or `~/.zshrc`:
-
-```bash
-# Add to ~/.bashrc or ~/.zshrc
-go() {
-  if [ "$1" == "askar" ]; then
-    shift
-    go-askar "$@"
-  else
-    command go "$@"
-  fi
-}
-```
-After running `source ~/.bashrc`, you can simply run:
-```bash
-go askar create/project my-project
+go askar create/project my-app
 ```
 
 > [!TIP]
