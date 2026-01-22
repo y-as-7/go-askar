@@ -78,7 +78,8 @@ func main() {
 
 	// Validate project name
 	if !isValidProjectName(projectName) {
-		printError(fmt.Sprintf("Invalid project name '%s'. Use only letters, numbers, hyphens, and underscores", projectName))
+		printError(fmt.Sprintf("Invalid project name '%s' (length: %d). Use only letters, numbers, hyphens, and underscores", projectName, len(projectName)))
+		fmt.Printf("DEBUG: raw args: %v\n", os.Args)
 		os.Exit(1)
 	}
 
@@ -113,7 +114,7 @@ func displayLogo() {
   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 ` + Reset + `
 ` + Magenta + `              A Laravel-inspired Go Framework` + Reset + `
-` + Yellow + `              Version 1.0.2 (LATEST)` + Reset + `
+` + Yellow + `              Version 1.0.3 (FORCED UPDATE) ✨` + Reset + `
 `
 	fmt.Print(logo)
 }
