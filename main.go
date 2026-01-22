@@ -117,6 +117,11 @@ func isValidProjectName(name string) bool {
 }
 
 func cloneFramework(projectName string) error {
+	// Check if directory already exists
+	if _, err := os.Stat(projectName); err == nil {
+		return fmt.Errorf("directory '%s' already exists. Please choose a different project name or remove the existing directory", projectName)
+	}
+
 	spinner := []string{"⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"}
 	done := make(chan bool)
 	
@@ -138,9 +143,15 @@ func cloneFramework(projectName string) error {
 	err := cmd.Run()
 	
 	done <- true
+	
+	if err != nil {
+		fmt.Print("\r                          \r") // Clear spinner line
+		return err
+	}
+	
 	fmt.Print("\r  ✓ Repository cloned     \n")
 	
-	return err
+	return nil
 }
 
 func setupProject(projectName string) error {
