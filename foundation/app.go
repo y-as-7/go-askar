@@ -2,6 +2,9 @@ package foundation
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/y-as-7/go-askar/pkg/ui"
@@ -28,6 +31,10 @@ func (app *Application) Run() {
 	// In a real scenario, this would initialize DB, load routes, and Run Gin
 	fmt.Printf("\n  %s✓%s Server listening on :8080\n\n", ui.Green, ui.Reset)
 	
-	// Block forever (representing a running server)
-	select {}
+	// Wait for interruption signal to gracefully shutdown
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	ui.PrintStep("Shutting down server...")
 }
