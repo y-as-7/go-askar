@@ -4,19 +4,25 @@ Welcome to **askar**! This guide will walk you through setting up the framework 
 
 ## 1. One-Line Installation
 
-Install the **askar** CLI tool and automatically configure your terminal with a single command:
+Choose the command for your platform to install the **askar** CLI and configure your terminal automatically:
 
+### 🍎 macOS / 🐧 Linux
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/y-as-7/go-askar/main/install.sh)"
 ```
 
+### 🪟 Windows (PowerShell)
+```powershell
+iwr -useb https://raw.githubusercontent.com/y-as-7/go-askar/main/install.ps1 | iex
+```
+
 ### What this does:
 - Installs the `go-askar` CLI binary.
-- Automatically adds a "Magic Trick" (shell function) to your `~/.bashrc` or `~/.zshrc`.
+- Automatically adds a "Magic Trick" (shell function or alias) to your terminal profile.
 - Enables the **`go askar`** command syntax.
 
 > [!IMPORTANT]
-> After running the command, **restart your terminal** or run `source ~/.bashrc` (or `~/.zshrc`) to apply the changes.
+> After running the command, **restart your terminal** or run `source ~/.bashrc` (or `. $PROFILE` on Windows) to apply the changes.
 
 ## 2. Create Your First Project
 

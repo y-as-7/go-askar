@@ -23,11 +23,17 @@ askar is accessible, powerful, and provides tools required for building robust R
 
 Install the **askar** CLI tool and configure your terminal in one command:
 
+### 🍎 macOS / 🐧 Linux
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/y-as-7/go-askar/main/install.sh)"
 ```
 
-Once installed, restart your terminal or run `source ~/.bashrc` (or `~/.zshrc`).
+### 🪟 Windows (PowerShell)
+```powershell
+iwr -useb https://raw.githubusercontent.com/y-as-7/go-askar/main/install.ps1 | iex
+```
+
+Once installed, restart your terminal or run `source ~/.bashrc` (or `. $PROFILE` on Windows).
 
 ## Creating an Application
 

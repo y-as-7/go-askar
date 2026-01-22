@@ -46,18 +46,19 @@ if [ "$IS_PROJECT" = false ]; then
     }
 
     UPDATED=false
+    # Support both bash and zsh (macOS default)
     configure_shell "$HOME/.bashrc" && UPDATED=true
     configure_shell "$HOME/.zshrc" && UPDATED=true
 
     echo ""
     echo -e "✅ ${GREEN}CLI installed successfully!${NC}"
     echo ""
-    if [ "$UPDATED" = true ]; then
-        echo -e "${YELLOW}IMPORTANT:${NC} Please restart your terminal or run:"
-        echo -e "   ${BLUE}source ~/.bashrc${NC}  (or ~/.zshrc)"
-    fi
+    echo -e "${YELLOW}⚠️  ACTION REQUIRED:${NC}"
+    echo -e "To use '${BLUE}go askar${NC}', you MUST restart your terminal or run:"
     echo ""
-    echo -e "Then you can start your project with just:"
+    echo -e "   ${GREEN}$Bold source ~/.bashrc $Reset${NC} (or ~/.zshrc)"
+    echo ""
+    echo -e "Then you can start your project with:"
     echo -e "   ${BLUE}go askar create/project my-app${NC}"
     echo ""
     exit 0
