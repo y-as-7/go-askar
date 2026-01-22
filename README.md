@@ -33,6 +33,25 @@ Create a new project:
 go-askar create/project my-project
 ```
 
+### ✨ Magic Trick: Use `go askar`
+If you really want to run it as **`go askar`**, add this to your `~/.bashrc` or `~/.zshrc`:
+
+```bash
+# Add to ~/.bashrc or ~/.zshrc
+go() {
+  if [ "$1" == "askar" ]; then
+    shift
+    go-askar "$@"
+  else
+    command go "$@"
+  fi
+}
+```
+After running `source ~/.bashrc`, you can simply run:
+```bash
+go askar create/project my-project
+```
+
 > [!TIP]
 > If you get "command not found", run: `export PATH=$PATH:$(go env GOPATH)/bin`
 

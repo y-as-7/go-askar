@@ -43,7 +43,7 @@ func main() {
 			showUsage()
 			os.Exit(1)
 		}
-		projectName = os.Args[2]
+		projectName = strings.TrimSpace(os.Args[2])
 	} else if command == "create" {
 		if len(os.Args) < 3 {
 			printError("Please provide a subcommand (e.g., project)")
@@ -57,7 +57,7 @@ func main() {
 				showUsage()
 				os.Exit(1)
 			}
-			projectName = os.Args[3]
+			projectName = strings.TrimSpace(os.Args[3])
 		} else {
 			printError("Unknown subcommand: " + subcommand)
 			showUsage()
@@ -69,7 +69,7 @@ func main() {
 			showUsage()
 			os.Exit(1)
 		}
-		projectName = os.Args[2]
+		projectName = strings.TrimSpace(os.Args[2])
 	} else {
 		printError("Unknown command: " + command)
 		showUsage()
@@ -78,7 +78,7 @@ func main() {
 
 	// Validate project name
 	if !isValidProjectName(projectName) {
-		printError("Invalid project name. Use only letters, numbers, hyphens, and underscores")
+		printError(fmt.Sprintf("Invalid project name '%s'. Use only letters, numbers, hyphens, and underscores", projectName))
 		os.Exit(1)
 	}
 
@@ -113,7 +113,7 @@ func displayLogo() {
   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 ` + Reset + `
 ` + Magenta + `              A Laravel-inspired Go Framework` + Reset + `
-` + Yellow + `              Version 0.1.0` + Reset + `
+` + Yellow + `              Version 1.0.0` + Reset + `
 `
 	fmt.Print(logo)
 }
