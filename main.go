@@ -114,7 +114,7 @@ func displayLogo() {
   ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
 ` + Reset + `
 ` + Magenta + `              A Laravel-inspired Go Framework` + Reset + `
-` + Yellow + `              Version 1.0.3 (FORCED UPDATE) ✨` + Reset + `
+` + Yellow + `              Version 1.0.4 (STABLE) ✨` + Reset + `
 `
 	fmt.Print(logo)
 }
@@ -243,14 +243,6 @@ func setupProject(projectName string) error {
 
 	// Remove .git directory
 	os.RemoveAll(".git")
-
-	// Initialize new git repo
-	printStep("🔧 Initializing git repository...")
-	time.Sleep(200 * time.Millisecond)
-	
-	exec.Command("git", "init").Run()
-	exec.Command("git", "add", ".").Run()
-	exec.Command("git", "commit", "-m", "Initial commit: "+projectName+" based on askar").Run()
 
 	return nil
 }

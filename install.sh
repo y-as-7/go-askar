@@ -102,15 +102,8 @@ fi
 echo "📥 Installing dependencies..."
 go mod tidy
 
-# Initialize git
-if [ ! -d .git ] || [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" != "true" ]; then
-    echo "🔧 Initializing git repository..."
-    # If we are in a subfolder of a git repo (cloned for creation), we want a fresh start
-    rm -rf .git || true
-    git init
-    git add .
-    git commit -m "Initial commit: $PROJECT_NAME based on askar framework"
-fi
+# Remove .git directory if it exists (cloned from framework)
+rm -rf .git || true
 
 echo -e "\n✅ ${GREEN}Project setup complete!${NC}\n"
 echo -e "📋 ${BLUE}Next steps:${NC}"
