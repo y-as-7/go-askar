@@ -7,7 +7,6 @@ import (
 	"github.com/y-as-7/go-askar/app/DTO"
 	"github.com/y-as-7/go-askar/app/Http/Middleware"
 	"github.com/y-as-7/go-askar/app/Models"
-	"github.com/y-as-7/go-askar/app/dto"
 	"github.com/y-as-7/go-askar/config"
 )
 

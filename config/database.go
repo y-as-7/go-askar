@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/y-as-7/go-askar/app/models"
+	"github.com/y-as-7/go-askar/app/Models"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"

@@ -1,5 +1,10 @@
 package DTO
 
+import (
+	"github.com/y-as-7/go-askar/app/Models"
+)
+
+// Response is a generic API response structure
 type Response struct {
 	Success bool        `json:"success"`
 	Message string      `json:"message,omitempty"`
@@ -7,6 +12,7 @@ type Response struct {
 	Error   string      `json:"error,omitempty"`
 }
 
+// User DTOs
 type RegisterRequest struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
@@ -19,6 +25,6 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	Token string      `json:"token"`
-	User  interface{} `json:"user"`
+	Token string       `json:"token"`
+	User  Models.User  `json:"user"`
 }

@@ -105,7 +105,14 @@ GET /api/v1/auth/profile     # Get user profile (requires JWT)
 
 ## CLI Tool Features
 
-The `askar` command provides a beautiful installation experience:
+The `askar` command provides powerful scaffolding capabilities:
+
+```
+go askar run --watch           # Start server with hot reload
+go askar make:model Product    # Generate model and DTO files
+go askar cache:clear          # Clear application cache
+go askar key:generate         # Generate JWT secret
+```
 
 ```
    ██████╗  ██████╗        █████╗ ███████╗██╗  ██╗ █████╗ ██████╗ 
